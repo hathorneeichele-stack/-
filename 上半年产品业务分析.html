@@ -19,6 +19,7 @@ const frame = document.getElementById('frame');
 const stamp = () => `v=${Date.now()}`;
 function loadPanel(src){
   const glue = src.includes('?') ? '&' : '?';
+  frame.dataset.src = src;
   frame.src = `${src}${glue}${stamp()}`;
 }
 document.querySelectorAll('button').forEach(b=>b.onclick=()=>{document.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');loadPanel(b.dataset.src);});
