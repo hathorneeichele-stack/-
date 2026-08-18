@@ -37,6 +37,7 @@ select,input,button { height:34px; border:1px solid var(--line); background:#fff
 button { cursor:pointer; color:#fff; background:var(--blue); border-color:var(--blue); font-weight:700; }
 button.secondary { color:var(--ink); background:#fff; border-color:var(--line); }
 .tablebox { max-height:468px; overflow:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+.salesTableBox { max-height:none; overflow:visible; }
 table { width:100%; border-collapse:collapse; font-size:13px; }
 th,td { border-bottom:1px solid var(--line); padding:8px 7px; text-align:center; vertical-align:middle; }
 th { position:sticky; top:0; background:#f1f5f9; color:#3f4d5d; font-size:12px; font-weight:800; line-height:1.25; z-index:1; }
@@ -46,9 +47,10 @@ td { font-weight:650; line-height:1.3; }
 .matrixTable col.productCol { width:104px; }
 .matrixTable col.totalCol { width:78px; }
 .matrixTable th,.matrixTable td { white-space:normal; word-break:break-word; overflow-wrap:anywhere; }
-.matrixTable thead th { font-size:10px; line-height:1.18; padding:7px 5px; }
+.matrixTable thead th { font-size:11px; line-height:1.2; padding:7px 5px; }
 .matrixTable tbody td { height:44px; }
 .matrixTable .branchCell { font-weight:850; color:#26394e; background:#fbfdff; }
+.matrixTable .companyRow .branchCell { background:#e8f1ff; color:#174f98; }
 .matrixTable .amountCell { cursor:pointer; color:#17212b; }
 .matrixTable .amountCell.empty { color:#b9c4cf; cursor:default; }
 .matrixTable .amountCell.selectedCell { background:#e8f1ff; color:#174f98; box-shadow:inset 0 0 0 2px #8bb7ef; }
@@ -65,8 +67,10 @@ tr.clickable:hover { background:#f8fbff; }
 .barFill { height:100%; border-radius:999px; background:var(--amber); min-width:2px; }
 .employeeTotal { text-align:right; font-weight:900; color:var(--red); font-size:15px; line-height:1.15; }
 .employeeTotal .mini { font-size:9px; font-weight:800; }
-.salesTable th,.salesTable td { font-size:12px; padding:7px 5px; }
+.salesTable th { font-size:11px; line-height:1.2; padding:7px 5px; }
+.salesTable td { font-size:12px; padding:7px 5px; }
 .salesTable .comment { text-align:left; min-width:180px; line-height:1.45; }
+.salesTable .companyRow td { background:#eef5ff; font-weight:900; }
 .toneRed { color:var(--red); font-weight:900; }
 .toneGreen { color:var(--green); font-weight:900; }
 .coverageTop { display:grid; gap:12px; }
@@ -91,13 +95,17 @@ tr.clickable:hover { background:#f8fbff; }
 .chart { height:322px; }
 @media(max-width:980px) { .wrap { padding:20px 18px 34px; } .kpis,.split,.layout2,.salesLayout,.coverageLayout,.branchCoverage { grid-template-columns:1fr; } .employeeRow { grid-template-columns:1fr; } .employeeTotal { text-align:left; } .matrixTable { min-width:720px; } }
 </style></head><body><div class="wrap">
-<div class="topbar"><div><h1>山东分公司2026年上半年私募业务分析</h1><div class="subtitle">围绕2026年1-6月零售权益私募销售、客户覆盖、员工出单率和高净值客户私募覆盖率展开。营业部月度汇总、年度对比和覆盖节奏放在一张图里看。</div></div></div>
+<div class="topbar"><div><h1>山东分公司2026年上半年私募业务分析</h1><div class="subtitle">围绕2026年1-6月零售+定制权益私募销量、客户覆盖、员工出单率和高净值客户私募覆盖率展开。营业部月度汇总、年度对比和覆盖节奏放在一张图里看。</div></div></div>
 <div class="grid kpis" id="kpis"></div>
 <div class="section grid split">
   <div class="card"><h2>月度营业部零售权益私募销售</h2><div class="controls"><select id="monthSelect"></select></div><div class="tablebox"><table id="monthTable"></table></div></div>
   <div class="card"><h2>员工销售下钻</h2><div id="drillTitle" class="analysisBox"></div><div class="employeeRows" id="employeeRows"></div></div>
 </div>
-<div class="section card"><h2>今年 vs 去年上半年（零售+定制权益私募合计）</h2><div class="salesLayout"><div class="summaryPanel"><div class="controls"><select id="salesBranchSelect"></select></div><div id="salesSummary" class="summaryHero"></div></div><div><div id="yoyChart" class="chart"></div></div></div><div class="tablebox" style="margin-top:14px"><table id="yoyTable" class="salesTable"></table></div></div>
+<div class="section grid split">
+  <div class="card"><h2>月度营业部定制私募销售</h2><div class="controls"><select id="customMonthSelect"></select></div><div class="tablebox"><table id="customMonthTable"></table></div></div>
+  <div class="card"><h2>定制员工销售下钻</h2><div id="customDrillTitle" class="analysisBox"></div><div class="employeeRows" id="customEmployeeRows"></div></div>
+</div>
+<div class="section card"><h2>今年 vs 去年上半年（零售+定制权益私募合计）</h2><div class="salesLayout"><div class="summaryPanel"><div class="controls"><select id="salesBranchSelect"></select></div><div id="salesSummary" class="summaryHero"></div></div><div><div id="yoyChart" class="chart"></div></div></div><div class="tablebox salesTableBox" style="margin-top:14px"><table id="yoyTable" class="salesTable"></table></div></div>
 <div class="section card"><h2>高净值客户私募覆盖率</h2><div class="coverageTop"><div class="companyCoverage" id="companyCoverage"></div><div class="branchCoverage" id="coverageBranches"></div></div><div class="coverageLayout"><div class="coverageChart"><div id="coverageTrend" class="chart"></div></div><div><div class="analysisBox" id="coverageConclusion"></div></div></div><div class="tablebox coverageTableBox"><table id="coverageTable" class="coverageTable"></table></div></div>
 </div><script>
 const DATA = {
@@ -3659,84 +3667,64 @@ const DATA = {
       "month_num": 1,
       "columns": [
         {
-          "key": "c3",
-          "col": 3,
-          "line1": "首发",
-          "line2": "盛丰灵泰灵活对冲1号（1.5-1.13）",
-          "line3": "300",
-          "label": "盛丰灵泰灵活对冲1号",
-          "product_key": "盛丰灵泰灵活对冲1号",
-          "clickable": true
+          "key": "龙旗锐泰一号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "龙旗锐泰一号",
+          "label": "龙旗锐泰一号",
+          "product_key": "龙旗锐泰一号",
+          "clickable": true,
+          "amount_wan": 3322.0
         },
         {
-          "key": "c4",
-          "col": 4,
-          "line1": "首发",
-          "line2": "龙旗锐泰一号2、3期（1.12）",
-          "line3": "1307",
-          "label": "龙旗锐泰一号2、3期",
-          "product_key": "龙旗锐泰一号23期",
-          "clickable": true
-        },
-        {
-          "key": "c5",
-          "col": 5,
-          "line1": "首发",
-          "line2": "诚奇兴泰锐进系列（1.19）",
-          "line3": "991.8",
-          "label": "诚奇兴泰锐进系列",
+          "key": "诚奇兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "诚奇兴泰锐进",
+          "label": "诚奇兴泰锐进",
           "product_key": "诚奇兴泰锐进",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 2708.8
         },
         {
-          "key": "c6",
-          "col": 6,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略3号",
-          "line3": "",
-          "label": "展弘灵泰多策略3号",
+          "key": "展弘灵泰多策略3号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略3号私募证券投资基金",
+          "label": "展弘灵泰多策略3号私募证券投资基金",
           "product_key": "展弘灵泰多策略3号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1302.0
         },
         {
-          "key": "c8",
-          "col": 8,
-          "line1": "诚奇兴泰锐进1号",
-          "line2": "诚奇兴泰锐进1号",
-          "line3": "101",
-          "label": "诚奇兴泰锐进1号",
-          "product_key": "诚奇兴泰锐进1号",
-          "clickable": true
+          "key": "盛丰灵泰灵活对冲1号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "盛丰灵泰灵活对冲1号私募证券投资基金",
+          "label": "盛丰灵泰灵活对冲1号私募证券投资基金",
+          "product_key": "盛丰灵泰灵活对冲1号",
+          "clickable": true,
+          "amount_wan": 1204.0
         },
         {
-          "key": "c9",
-          "col": 9,
-          "line1": "启林兴泰锐进心享1号",
-          "line2": "启林兴泰锐进心享1号",
-          "line3": "",
-          "label": "启林兴泰锐进心享1号",
-          "product_key": "启林兴泰锐进心享1号",
-          "clickable": true
-        },
-        {
-          "key": "c10",
-          "col": 10,
-          "line1": "龙旗锐泰一号1期",
-          "line2": "龙旗锐泰一号1期",
-          "line3": "500",
-          "label": "龙旗锐泰一号1期",
-          "product_key": "龙旗锐泰一号1期",
-          "clickable": true
-        },
-        {
-          "key": "c11",
-          "col": 11,
-          "line1": "倍漾兴泰锐进2号5期",
-          "line2": "倍漾兴泰锐进2号5期",
-          "line3": "100",
-          "label": "倍漾兴泰锐进2号5期",
+          "key": "倍漾兴泰锐进2号5期",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "倍漾兴泰锐进2号5期私募证券投资基金",
+          "label": "倍漾兴泰锐进2号5期私募证券投资基金",
           "product_key": "倍漾兴泰锐进2号5期",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 100.0
+        },
+        {
+          "key": "启林兴泰锐进心享",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "启林兴泰锐进心享",
+          "label": "启林兴泰锐进心享",
+          "product_key": "启林兴泰锐进心享",
+          "clickable": true,
+          "amount_wan": 30.0
         }
       ],
       "branch_rows": [
@@ -3746,14 +3734,10 @@ const DATA = {
           "branch": "济南解放路",
           "total_wan": 3299.8,
           "values": {
-            "c3": 300.0,
-            "c4": 1307.0,
-            "c5": 991.8,
-            "c6": 0.0,
-            "c8": 101.0,
-            "c9": 0.0,
-            "c10": 500.0,
-            "c11": 100.0
+            "盛丰灵泰灵活对冲1号": 300.0,
+            "龙旗锐泰一号": 1807.0,
+            "诚奇兴泰锐进": 1092.8,
+            "倍漾兴泰锐进2号5期": 100.0
           }
         },
         {
@@ -3762,14 +3746,9 @@ const DATA = {
           "branch": "莱阳昌山路",
           "total_wan": 2312.0,
           "values": {
-            "c3": 702.0,
-            "c4": 308.0,
-            "c5": 0.0,
-            "c6": 1302.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c11": 0.0
+            "盛丰灵泰灵活对冲1号": 702.0,
+            "展弘灵泰多策略3号": 1302.0,
+            "龙旗锐泰一号": 308.0
           }
         },
         {
@@ -3778,14 +3757,9 @@ const DATA = {
           "branch": "济南解放东路",
           "total_wan": 1414.0,
           "values": {
-            "c3": 202.0,
-            "c4": 404.0,
-            "c5": 808.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c11": 0.0
+            "龙旗锐泰一号": 404.0,
+            "盛丰灵泰灵活对冲1号": 202.0,
+            "诚奇兴泰锐进": 808.0
           }
         },
         {
@@ -3794,14 +3768,8 @@ const DATA = {
           "branch": "青岛香港西路",
           "total_wan": 707.0,
           "values": {
-            "c3": 0.0,
-            "c4": 303.0,
-            "c5": 404.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c11": 0.0
+            "龙旗锐泰一号": 303.0,
+            "诚奇兴泰锐进": 404.0
           }
         },
         {
@@ -3810,14 +3778,8 @@ const DATA = {
           "branch": "烟台南大街",
           "total_wan": 601.0,
           "values": {
-            "c3": 0.0,
-            "c4": 500.0,
-            "c5": 101.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c11": 0.0
+            "龙旗锐泰一号": 500.0,
+            "诚奇兴泰锐进": 101.0
           }
         },
         {
@@ -3826,30 +3788,8 @@ const DATA = {
           "branch": "济南经七路",
           "total_wan": 333.0,
           "values": {
-            "c3": 0.0,
-            "c4": 0.0,
-            "c5": 303.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 30.0,
-            "c10": 0.0,
-            "c11": 0.0
-          }
-        },
-        {
-          "month": "1月",
-          "month_num": 1,
-          "branch": "临沂北京路",
-          "total_wan": 0.0,
-          "values": {
-            "c3": 0.0,
-            "c4": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c11": 0.0
+            "诚奇兴泰锐进": 303.0,
+            "启林兴泰锐进心享": 30.0
           }
         }
       ]
@@ -3859,64 +3799,64 @@ const DATA = {
       "month_num": 2,
       "columns": [
         {
-          "key": "c3",
-          "col": 3,
-          "line1": "重点级产品",
-          "line2": "首发",
-          "line3": "赫富兴泰锐进系列（1.26-1.30）",
-          "label": "赫富兴泰锐进系列",
+          "key": "赫富兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "赫富兴泰锐进",
+          "label": "赫富兴泰锐进",
           "product_key": "赫富兴泰锐进",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1823.0
         },
         {
-          "key": "c4",
-          "col": 4,
-          "line1": "重点级产品",
-          "line2": "首发",
-          "line3": "申毅稳泰千里马系列（2.2-2.6）",
-          "label": "申毅稳泰千里马系列",
+          "key": "申毅稳泰千里马",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "申毅稳泰千里马",
+          "label": "申毅稳泰千里马",
           "product_key": "申毅稳泰千里马",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1001.5
         },
         {
-          "key": "c5",
-          "col": 5,
-          "line1": "重点级产品",
-          "line2": "首发",
-          "line3": "千衍兴泰锐进六和62号（2.27）",
-          "label": "千衍兴泰锐进六和62号",
+          "key": "千衍兴泰锐进六和62号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "千衍兴泰锐进六和62号私募证券投资基金",
+          "label": "千衍兴泰锐进六和62号私募证券投资基金",
           "product_key": "千衍兴泰锐进六和62号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 202.0
         },
         {
-          "key": "c6",
-          "col": 6,
-          "line1": "重点级产品",
-          "line2": "持营",
-          "line3": "衍复兴泰中证全指3号",
-          "label": "衍复兴泰中证全指3号",
-          "product_key": "衍复兴泰中证全指3号",
-          "clickable": true
-        },
-        {
-          "key": "c8",
-          "col": 8,
-          "line1": "其他零售",
-          "line2": "九坤兴泰进享8号",
-          "line3": "九坤兴泰进享8号",
-          "label": "九坤兴泰进享8号",
+          "key": "九坤兴泰进享8号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "九坤兴泰进享8号私募证券投资基金",
+          "label": "九坤兴泰进享8号私募证券投资基金",
           "product_key": "九坤兴泰进享8号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 171.7
         },
         {
-          "key": "c9",
-          "col": 9,
-          "line1": "其他零售",
-          "line2": "天演兴泰1号",
-          "line3": "天演兴泰1号",
-          "label": "天演兴泰1号",
-          "product_key": "天演兴泰1号",
-          "clickable": true
+          "key": "天演兴泰",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "天演兴泰",
+          "label": "天演兴泰",
+          "product_key": "天演兴泰",
+          "clickable": true,
+          "amount_wan": 106.0
+        },
+        {
+          "key": "衍复兴泰中证全指",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "衍复兴泰中证全指",
+          "label": "衍复兴泰中证全指",
+          "product_key": "衍复兴泰中证全指",
+          "clickable": true,
+          "amount_wan": 101.0
         }
       ],
       "branch_rows": [
@@ -3926,12 +3866,9 @@ const DATA = {
           "branch": "济南解放路",
           "total_wan": 1609.5,
           "values": {
-            "c3": 1107.0,
-            "c4": 300.5,
-            "c5": 202.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0
+            "赫富兴泰锐进": 1107.0,
+            "申毅稳泰千里马": 300.5,
+            "千衍兴泰锐进六和62号": 202.0
           }
         },
         {
@@ -3940,12 +3877,8 @@ const DATA = {
           "branch": "济南解放东路",
           "total_wan": 872.7,
           "values": {
-            "c3": 0.0,
-            "c4": 701.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c8": 171.7,
-            "c9": 0.0
+            "申毅稳泰千里马": 701.0,
+            "九坤兴泰进享8号": 171.7
           }
         },
         {
@@ -3954,12 +3887,9 @@ const DATA = {
           "branch": "青岛香港西路",
           "total_wan": 520.0,
           "values": {
-            "c3": 313.0,
-            "c4": 0.0,
-            "c5": 0.0,
-            "c6": 101.0,
-            "c8": 0.0,
-            "c9": 106.0
+            "赫富兴泰锐进": 313.0,
+            "衍复兴泰中证全指": 101.0,
+            "天演兴泰": 106.0
           }
         },
         {
@@ -3968,54 +3898,7 @@ const DATA = {
           "branch": "莱阳昌山路",
           "total_wan": 403.0,
           "values": {
-            "c3": 403.0,
-            "c4": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0
-          }
-        },
-        {
-          "month": "2月",
-          "month_num": 2,
-          "branch": "烟台南大街",
-          "total_wan": 0.0,
-          "values": {
-            "c3": 0.0,
-            "c4": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0
-          }
-        },
-        {
-          "month": "2月",
-          "month_num": 2,
-          "branch": "济南经七路",
-          "total_wan": 0.0,
-          "values": {
-            "c3": 0.0,
-            "c4": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0
-          }
-        },
-        {
-          "month": "2月",
-          "month_num": 2,
-          "branch": "临沂北京路",
-          "total_wan": 0.0,
-          "values": {
-            "c3": 0.0,
-            "c4": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c8": 0.0,
-            "c9": 0.0
+            "赫富兴泰锐进": 403.0
           }
         }
       ]
@@ -4025,84 +3908,74 @@ const DATA = {
       "month_num": 3,
       "columns": [
         {
-          "key": "c3",
-          "col": 3,
-          "line1": "首发",
-          "line2": "黑翼灵泰精选多策略系列（3.9-3.16）",
-          "line3": "1311.5",
-          "label": "黑翼灵泰精选多策略系列",
+          "key": "黑翼灵泰精选多策略",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "黑翼灵泰精选多策略",
+          "label": "黑翼灵泰精选多策略",
           "product_key": "黑翼灵泰精选多策略",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 3176.5
         },
         {
-          "key": "c5",
-          "col": 5,
-          "line1": "首发",
-          "line2": "启林兴泰锐进心享3、5（3.2-3.6）",
-          "line3": "508",
-          "label": "启林兴泰锐进心享3、5",
-          "product_key": "启林兴泰锐进心享35",
-          "clickable": true
-        },
-        {
-          "key": "c6",
-          "col": 6,
-          "line1": "首发",
-          "line2": "衍复兴泰中证全指系列（3.18-3.26）",
-          "line3": "956",
-          "label": "衍复兴泰中证全指系列",
+          "key": "衍复兴泰中证全指",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "衍复兴泰中证全指",
+          "label": "衍复兴泰中证全指",
           "product_key": "衍复兴泰中证全指",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1663.0
         },
         {
-          "key": "c7",
-          "col": 7,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略2号",
-          "line3": "1000",
-          "label": "展弘灵泰多策略2号",
+          "key": "启林兴泰锐进心享",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "启林兴泰锐进心享",
+          "label": "启林兴泰锐进心享",
+          "product_key": "启林兴泰锐进心享",
+          "clickable": true,
+          "amount_wan": 1392.0
+        },
+        {
+          "key": "展弘灵泰多策略2号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略2号私募证券投资基金",
+          "label": "展弘灵泰多策略2号私募证券投资基金",
           "product_key": "展弘灵泰多策略2号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1050.5
         },
         {
-          "key": "c8",
-          "col": 8,
-          "line1": "持营",
-          "line2": "启林稳泰对冲心享1号",
-          "line3": "",
-          "label": "启林稳泰对冲心享1号",
+          "key": "赫富兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "赫富兴泰锐进",
+          "label": "赫富兴泰锐进",
+          "product_key": "赫富兴泰锐进",
+          "clickable": true,
+          "amount_wan": 202.0
+        },
+        {
+          "key": "诚奇兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "诚奇兴泰锐进",
+          "label": "诚奇兴泰锐进",
+          "product_key": "诚奇兴泰锐进",
+          "clickable": true,
+          "amount_wan": 101.0
+        },
+        {
+          "key": "启林稳泰对冲心享1号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "启林稳泰对冲心享1号私募证券投资基金",
+          "label": "启林稳泰对冲心享1号私募证券投资基金",
           "product_key": "启林稳泰对冲心享1号",
-          "clickable": true
-        },
-        {
-          "key": "c10",
-          "col": 10,
-          "line1": "赫富兴泰锐进1号5期",
-          "line2": "赫富兴泰锐进1号5期",
-          "line3": "202",
-          "label": "赫富兴泰锐进1号5期",
-          "product_key": "赫富兴泰锐进1号5期",
-          "clickable": true
-        },
-        {
-          "key": "c11",
-          "col": 11,
-          "line1": "诚奇兴泰锐进2号",
-          "line2": "诚奇兴泰锐进2号",
-          "line3": "101",
-          "label": "诚奇兴泰锐进2号",
-          "product_key": "诚奇兴泰锐进2号",
-          "clickable": true
-        },
-        {
-          "key": "c12",
-          "col": 12,
-          "line1": "启林兴泰锐进心享2号",
-          "line2": "启林兴泰锐进心享2号",
-          "line3": "",
-          "label": "启林兴泰锐进心享2号",
-          "product_key": "启林兴泰锐进心享2号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 101.0
         }
       ],
       "branch_rows": [
@@ -4110,16 +3983,14 @@ const DATA = {
           "month": "3月",
           "month_num": 3,
           "branch": "济南解放路",
-          "total_wan": 4078.5,
+          "total_wan": 4129.0,
           "values": {
-            "c3": 1311.5,
-            "c5": 508.0,
-            "c6": 956.0,
-            "c7": 1000.0,
-            "c8": 0.0,
-            "c10": 202.0,
-            "c11": 101.0,
-            "c12": 0.0
+            "诚奇兴泰锐进": 101.0,
+            "赫富兴泰锐进": 202.0,
+            "启林兴泰锐进心享": 508.0,
+            "黑翼灵泰精选多策略": 1311.5,
+            "展弘灵泰多策略2号": 1050.5,
+            "衍复兴泰中证全指": 956.0
           }
         },
         {
@@ -4128,14 +3999,8 @@ const DATA = {
           "branch": "济南解放东路",
           "total_wan": 909.0,
           "values": {
-            "c3": 606.0,
-            "c5": 0.0,
-            "c6": 303.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c10": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "黑翼灵泰精选多策略": 606.0,
+            "衍复兴泰中证全指": 303.0
           }
         },
         {
@@ -4144,30 +4009,8 @@ const DATA = {
           "branch": "莱阳昌山路",
           "total_wan": 852.0,
           "values": {
-            "c3": 572.0,
-            "c5": 200.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c10": 0.0,
-            "c11": 0.0,
-            "c12": 80.0
-          }
-        },
-        {
-          "month": "3月",
-          "month_num": 3,
-          "branch": "济南经七路",
-          "total_wan": 252.0,
-          "values": {
-            "c3": 252.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c10": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "启林兴泰锐进心享": 280.0,
+            "黑翼灵泰精选多策略": 572.0
           }
         },
         {
@@ -4176,14 +4019,9 @@ const DATA = {
           "branch": "青岛香港西路",
           "total_wan": 839.0,
           "values": {
-            "c3": 435.0,
-            "c5": 101.0,
-            "c6": 303.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c10": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "衍复兴泰中证全指": 303.0,
+            "启林兴泰锐进心享": 101.0,
+            "黑翼灵泰精选多策略": 435.0
           }
         },
         {
@@ -4192,14 +4030,17 @@ const DATA = {
           "branch": "临沂北京路",
           "total_wan": 604.0,
           "values": {
-            "c3": 0.0,
-            "c5": 503.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 101.0,
-            "c10": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "启林兴泰锐进心享": 503.0,
+            "启林稳泰对冲心享1号": 101.0
+          }
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "branch": "济南经七路",
+          "total_wan": 252.0,
+          "values": {
+            "黑翼灵泰精选多策略": 252.0
           }
         },
         {
@@ -4208,14 +4049,7 @@ const DATA = {
           "branch": "烟台南大街",
           "total_wan": 101.0,
           "values": {
-            "c3": 0.0,
-            "c5": 0.0,
-            "c6": 101.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c10": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "衍复兴泰中证全指": 101.0
           }
         }
       ]
@@ -4225,94 +4059,134 @@ const DATA = {
       "month_num": 4,
       "columns": [
         {
-          "key": "c3",
-          "col": 3,
-          "line1": "首发",
-          "line2": "天演兴泰系列（4.7-4.15）",
-          "line3": "402",
-          "label": "天演兴泰系列",
+          "key": "天演兴泰",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "天演兴泰",
+          "label": "天演兴泰",
           "product_key": "天演兴泰",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1560.5
         },
         {
-          "key": "c5",
-          "col": 5,
-          "line1": "首发",
-          "line2": "泓湖永泰均衡配置六号",
-          "line3": "404",
+          "key": "龙旗锐泰一号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "龙旗锐泰一号",
+          "label": "龙旗锐泰一号",
+          "product_key": "龙旗锐泰一号",
+          "clickable": true,
+          "amount_wan": 1000.0
+        },
+        {
+          "key": "明上增利",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "明上增利",
+          "label": "明上增利",
+          "product_key": "明上增利",
+          "clickable": true,
+          "amount_wan": 760.0
+        },
+        {
+          "key": "展弘灵泰多策略10号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略10号私募证券投资基金",
+          "label": "展弘灵泰多策略10号私募证券投资基金",
+          "product_key": "展弘灵泰多策略10号",
+          "clickable": true,
+          "amount_wan": 601.0
+        },
+        {
+          "key": "申毅稳泰千里马",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "申毅稳泰千里马",
+          "label": "申毅稳泰千里马",
+          "product_key": "申毅稳泰千里马",
+          "clickable": true,
+          "amount_wan": 550.0
+        },
+        {
+          "key": "泓湖永泰均衡配置六号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "泓湖永泰均衡配置六号",
           "label": "泓湖永泰均衡配置六号",
           "product_key": "泓湖永泰均衡配置六号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 404.0
         },
         {
-          "key": "c6",
-          "col": 6,
-          "line1": "持营",
-          "line2": "世纪前沿兴泰进取A期",
-          "line3": "300",
-          "label": "世纪前沿兴泰进取A期",
+          "key": "九坤股票多空配置58号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "九坤股票多空配置58号",
+          "label": "九坤股票多空配置58号",
+          "product_key": "九坤股票多空配置58号",
+          "clickable": true,
+          "amount_wan": 300.0
+        },
+        {
+          "key": "世纪前沿兴泰进取A期",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "世纪前沿兴泰进取A期私募证券投资基金",
+          "label": "世纪前沿兴泰进取A期私募证券投资基金",
           "product_key": "世纪前沿兴泰进取A期",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 300.0
         },
         {
-          "key": "c7",
-          "col": 7,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略10号",
-          "line3": "601",
-          "label": "展弘灵泰多策略10号",
-          "product_key": "展弘灵泰多策略10号",
-          "clickable": true
+          "key": "诚奇兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "诚奇兴泰锐进",
+          "label": "诚奇兴泰锐进",
+          "product_key": "诚奇兴泰锐进",
+          "clickable": true,
+          "amount_wan": 103.0
         },
         {
-          "key": "c8",
-          "col": 8,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略9号",
-          "line3": "",
-          "label": "展弘灵泰多策略9号",
+          "key": "赫富兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "赫富兴泰锐进",
+          "label": "赫富兴泰锐进",
+          "product_key": "赫富兴泰锐进",
+          "clickable": true,
+          "amount_wan": 101.0
+        },
+        {
+          "key": "黑翼灵泰精选多策略",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "黑翼灵泰精选多策略",
+          "label": "黑翼灵泰精选多策略",
+          "product_key": "黑翼灵泰精选多策略",
+          "clickable": true,
+          "amount_wan": 101.0
+        },
+        {
+          "key": "展弘灵泰多策略9号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略9号私募证券投资基金",
+          "label": "展弘灵泰多策略9号私募证券投资基金",
           "product_key": "展弘灵泰多策略9号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 101.0
         },
         {
-          "key": "c9",
-          "col": 9,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略2号",
-          "line3": "",
-          "label": "展弘灵泰多策略2号",
+          "key": "展弘灵泰多策略2号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略2号私募证券投资基金",
+          "label": "展弘灵泰多策略2号私募证券投资基金",
           "product_key": "展弘灵泰多策略2号",
-          "clickable": true
-        },
-        {
-          "key": "c11",
-          "col": 11,
-          "line1": "赫富兴泰锐进1号5期",
-          "line2": "赫富兴泰锐进1号5期",
-          "line3": "",
-          "label": "赫富兴泰锐进1号5期",
-          "product_key": "赫富兴泰锐进1号5期",
-          "clickable": true
-        },
-        {
-          "key": "c12",
-          "col": 12,
-          "line1": "诚奇兴泰锐进2号",
-          "line2": "诚奇兴泰锐进2号",
-          "line3": "",
-          "label": "诚奇兴泰锐进2号",
-          "product_key": "诚奇兴泰锐进2号",
-          "clickable": true
-        },
-        {
-          "key": "c13",
-          "col": 13,
-          "line1": "启林兴泰锐进心享2号",
-          "line2": "启林兴泰锐进心享2号",
-          "line3": "",
-          "label": "启林兴泰锐进心享2号",
-          "product_key": "启林兴泰锐进心享2号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 101.0
         }
       ],
       "branch_rows": [
@@ -4322,15 +4196,15 @@ const DATA = {
           "branch": "济南解放路",
           "total_wan": 2862.0,
           "values": {
-            "c3": 402.0,
-            "c5": 404.0,
-            "c6": 300.0,
-            "c7": 601.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
+            "诚奇兴泰锐进": 103.0,
+            "赫富兴泰锐进": 101.0,
+            "申毅稳泰千里马": 550.0,
+            "黑翼灵泰精选多策略": 101.0,
+            "泓湖永泰均衡配置六号": 404.0,
+            "天演兴泰": 402.0,
+            "九坤股票多空配置58号": 300.0,
+            "世纪前沿兴泰进取A期": 300.0,
+            "展弘灵泰多策略10号": 601.0
           }
         },
         {
@@ -4339,66 +4213,29 @@ const DATA = {
           "branch": "济南解放东路",
           "total_wan": 1202.0,
           "values": {
-            "c3": 202.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
+            "龙旗锐泰一号": 1000.0,
+            "天演兴泰": 202.0
           }
         },
         {
           "month": "4月",
           "month_num": 4,
           "branch": "莱阳昌山路",
-          "total_wan": 502.0,
+          "total_wan": 962.0,
           "values": {
-            "c3": 502.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
-          }
-        },
-        {
-          "month": "4月",
-          "month_num": 4,
-          "branch": "济南经七路",
-          "total_wan": 101.0,
-          "values": {
-            "c3": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 101.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
+            "明上增利": 460.0,
+            "天演兴泰": 502.0
           }
         },
         {
           "month": "4月",
           "month_num": 4,
           "branch": "青岛香港西路",
-          "total_wan": 353.5,
+          "total_wan": 653.5,
           "values": {
-            "c3": 252.5,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 101.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
+            "明上增利": 300.0,
+            "天演兴泰": 252.5,
+            "展弘灵泰多策略2号": 101.0
           }
         },
         {
@@ -4407,32 +4244,16 @@ const DATA = {
           "branch": "临沂北京路",
           "total_wan": 202.0,
           "values": {
-            "c3": 202.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
+            "天演兴泰": 202.0
           }
         },
         {
           "month": "4月",
           "month_num": 4,
-          "branch": "烟台南大街",
-          "total_wan": 0.0,
+          "branch": "济南经七路",
+          "total_wan": 101.0,
           "values": {
-            "c3": 0.0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0,
-            "c13": 0.0
+            "展弘灵泰多策略9号": 101.0
           }
         }
       ]
@@ -4442,135 +4263,98 @@ const DATA = {
       "month_num": 5,
       "columns": [
         {
-          "key": "c3",
-          "col": 3,
-          "line1": "首发",
-          "line2": "天演兴泰系列（4.7-4.15）",
-          "line3": "",
-          "label": "天演兴泰系列",
-          "product_key": "天演兴泰",
-          "clickable": true
-        },
-        {
-          "key": "c5",
-          "col": 5,
-          "line1": "首发",
-          "line2": "九坤兴泰进取系列",
-          "line3": "1438",
-          "label": "九坤兴泰进取系列",
+          "key": "九坤兴泰进取",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "九坤兴泰进取",
+          "label": "九坤兴泰进取",
           "product_key": "九坤兴泰进取",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 8451.7999
         },
         {
-          "key": "c7",
-          "col": 7,
-          "line1": "首发",
-          "line2": "知行通达兴泰汇智量选系列",
-          "line3": "200",
-          "label": "知行通达兴泰汇智量选系列",
-          "product_key": "知行通达兴泰汇智量选",
-          "clickable": true
-        },
-        {
-          "key": "c8",
-          "col": 8,
-          "line1": "首发",
-          "line2": "进化论三维锐泰1号",
-          "line3": "410",
-          "label": "进化论三维锐泰1号",
-          "product_key": "进化论三维锐泰1号",
-          "clickable": true
-        },
-        {
-          "key": "c9",
-          "col": 9,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略9号",
-          "line3": "",
-          "label": "展弘灵泰多策略9号",
-          "product_key": "展弘灵泰多策略9号",
-          "clickable": true
-        },
-        {
-          "key": "c10",
-          "col": 10,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略2号",
-          "line3": "3000",
-          "label": "展弘灵泰多策略2号",
+          "key": "展弘灵泰多策略2号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略2号私募证券投资基金",
+          "label": "展弘灵泰多策略2号私募证券投资基金",
           "product_key": "展弘灵泰多策略2号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 3101.0
         },
         {
-          "key": "c12",
-          "col": 12,
-          "line1": "衍复兴泰中证全指9号",
-          "line2": "衍复兴泰中证全指9号",
-          "line3": "",
-          "label": "衍复兴泰中证全指9号",
-          "product_key": "衍复兴泰中证全指9号",
-          "clickable": true
+          "key": "进化论三维锐泰1号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "进化论三维锐泰1号私募证券投资基金",
+          "label": "进化论三维锐泰1号私募证券投资基金",
+          "product_key": "进化论三维锐泰1号",
+          "clickable": true,
+          "amount_wan": 1311.0
+        },
+        {
+          "key": "知行通达兴泰汇智量选",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "知行通达兴泰汇智量选",
+          "label": "知行通达兴泰汇智量选",
+          "product_key": "知行通达兴泰汇智量选",
+          "clickable": true,
+          "amount_wan": 907.0
+        },
+        {
+          "key": "衍复兴泰中证全指",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "衍复兴泰中证全指",
+          "label": "衍复兴泰中证全指",
+          "product_key": "衍复兴泰中证全指",
+          "clickable": true,
+          "amount_wan": 101.0
+        },
+        {
+          "key": "展弘灵泰多策略9号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略9号私募证券投资基金",
+          "label": "展弘灵泰多策略9号私募证券投资基金",
+          "product_key": "展弘灵泰多策略9号",
+          "clickable": true,
+          "amount_wan": 101.0
+        },
+        {
+          "key": "明上增利",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "明上增利",
+          "label": "明上增利",
+          "product_key": "明上增利",
+          "clickable": true,
+          "amount_wan": 100.0
         }
       ],
       "branch_rows": [
         {
           "month": "5月",
           "month_num": 5,
-          "branch": "莱阳昌山路",
-          "total_wan": 5048.0,
-          "values": {
-            "c3": 0,
-            "c5": 1438.0,
-            "c7": 200.0,
-            "c8": 410.0,
-            "c9": 0.0,
-            "c10": 3000.0,
-            "c12": 0.0
-          }
-        },
-        {
-          "month": "5月",
-          "month_num": 5,
-          "branch": "临沂北京路",
-          "total_wan": 505.0,
-          "values": {
-            "c3": 0,
-            "c5": 404.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 101.0,
-            "c12": 0.0
-          }
-        },
-        {
-          "month": "5月",
-          "month_num": 5,
           "branch": "济南解放路",
           "total_wan": 5364.4999,
           "values": {
-            "c3": 0,
-            "c5": 4559.4999,
-            "c7": 505.0,
-            "c8": 300.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c12": 0.0
+            "知行通达兴泰汇智量选": 505.0,
+            "进化论三维锐泰1号": 300.0,
+            "九坤兴泰进取": 4559.4999
           }
         },
         {
           "month": "5月",
           "month_num": 5,
-          "branch": "济南解放东路",
-          "total_wan": 909.0,
+          "branch": "莱阳昌山路",
+          "total_wan": 5048.0,
           "values": {
-            "c3": 0,
-            "c5": 606.0,
-            "c7": 101.0,
-            "c8": 101.0,
-            "c9": 101.0,
-            "c10": 0.0,
-            "c12": 0.0
+            "知行通达兴泰汇智量选": 200.0,
+            "展弘灵泰多策略2号": 3000.0,
+            "进化论三维锐泰1号": 410.0,
+            "九坤兴泰进取": 1438.0
           }
         },
         {
@@ -4579,13 +4363,21 @@ const DATA = {
           "branch": "青岛香港西路",
           "total_wan": 1540.3,
           "values": {
-            "c3": 0,
-            "c5": 939.3,
-            "c7": 0.0,
-            "c8": 500.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c12": 101.0
+            "衍复兴泰中证全指": 101.0,
+            "进化论三维锐泰1号": 500.0,
+            "九坤兴泰进取": 939.3000000000001
+          }
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "branch": "济南解放东路",
+          "total_wan": 909.0,
+          "values": {
+            "知行通达兴泰汇智量选": 101.0,
+            "进化论三维锐泰1号": 101.0,
+            "九坤兴泰进取": 606.0,
+            "展弘灵泰多策略9号": 101.0
           }
         },
         {
@@ -4594,28 +4386,28 @@ const DATA = {
           "branch": "济南经七路",
           "total_wan": 505.0,
           "values": {
-            "c3": 0,
-            "c5": 404.0,
-            "c7": 101.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c12": 0.0
+            "知行通达兴泰汇智量选": 101.0,
+            "九坤兴泰进取": 404.0
+          }
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "branch": "临沂北京路",
+          "total_wan": 505.0,
+          "values": {
+            "展弘灵泰多策略2号": 101.0,
+            "九坤兴泰进取": 404.0
           }
         },
         {
           "month": "5月",
           "month_num": 5,
           "branch": "烟台南大街",
-          "total_wan": 101.0,
+          "total_wan": 201.0,
           "values": {
-            "c3": 0,
-            "c5": 101.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c10": 0.0,
-            "c12": 0.0
+            "明上增利": 100.0,
+            "九坤兴泰进取": 101.0
           }
         }
       ]
@@ -4625,101 +4417,109 @@ const DATA = {
       "month_num": 6,
       "columns": [
         {
-          "key": "c3",
-          "col": 3,
-          "line1": "首发",
-          "line2": "天演兴泰系列（4.7-4.15）",
-          "line3": "",
-          "label": "天演兴泰系列",
-          "product_key": "天演兴泰",
-          "clickable": true
+          "key": "明上增利",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "明上增利",
+          "label": "明上增利",
+          "product_key": "明上增利",
+          "clickable": true,
+          "amount_wan": 2260.0
         },
         {
-          "key": "c5",
-          "col": 5,
-          "line1": "首发",
-          "line2": "弈倍兴泰锐进系列",
-          "line3": "101",
-          "label": "弈倍兴泰锐进系列",
-          "product_key": "弈倍兴泰锐进",
-          "clickable": true
-        },
-        {
-          "key": "c6",
-          "col": 6,
-          "line1": "首发",
-          "line2": "世纪前沿兴泰精选系列",
-          "line3": "512",
-          "label": "世纪前沿兴泰精选系列",
+          "key": "世纪前沿兴泰精选",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "世纪前沿兴泰精选",
+          "label": "世纪前沿兴泰精选",
           "product_key": "世纪前沿兴泰精选",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1745.0
         },
         {
-          "key": "c7",
-          "col": 7,
-          "line1": "首发",
-          "line2": "龙旗灵动系列",
-          "line3": "1008",
-          "label": "龙旗灵动系列",
+          "key": "龙旗灵动",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "龙旗灵动",
+          "label": "龙旗灵动",
           "product_key": "龙旗灵动",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 1109.0
         },
         {
-          "key": "c8",
-          "col": 8,
-          "line1": "持营",
-          "line2": "展弘灵泰多策略9号",
-          "line3": "101",
-          "label": "展弘灵泰多策略9号",
+          "key": "弈倍兴泰锐进",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "弈倍兴泰锐进",
+          "label": "弈倍兴泰锐进",
+          "product_key": "弈倍兴泰锐进",
+          "clickable": true,
+          "amount_wan": 352.0
+        },
+        {
+          "key": "展弘灵泰多策略9号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "展弘灵泰多策略9号私募证券投资基金",
+          "label": "展弘灵泰多策略9号私募证券投资基金",
           "product_key": "展弘灵泰多策略9号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 101.0
         },
         {
-          "key": "c9",
-          "col": 9,
-          "line1": "持营",
-          "line2": "九坤兴泰进享1号",
-          "line3": "",
-          "label": "九坤兴泰进享1号",
-          "product_key": "九坤兴泰进享1号",
-          "clickable": true
-        },
-        {
-          "key": "c11",
-          "col": 11,
-          "line1": "量客稳泰套利1号1期",
-          "line2": "量客稳泰套利1号1期",
-          "line3": "101",
-          "label": "量客稳泰套利1号1期",
+          "key": "量客稳泰套利1号1期",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "量客稳泰套利1号1期私募证券投资基金",
+          "label": "量客稳泰套利1号1期私募证券投资基金",
           "product_key": "量客稳泰套利1号1期",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 101.0
         },
         {
-          "key": "c12",
-          "col": 12,
-          "line1": "进化论稳泰对冲1号",
-          "line2": "进化论稳泰对冲1号",
-          "line3": "",
-          "label": "进化论稳泰对冲1号",
+          "key": "九坤兴泰进享1号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "九坤兴泰进享1号私募证券投资基金",
+          "label": "九坤兴泰进享1号私募证券投资基金",
+          "product_key": "九坤兴泰进享1号",
+          "clickable": true,
+          "amount_wan": 101.0
+        },
+        {
+          "key": "进化论稳泰对冲1号",
+          "line1": "零售产品",
+          "line2": "",
+          "line3": "进化论稳泰对冲1号私募证券投资基金",
+          "label": "进化论稳泰对冲1号私募证券投资基金",
           "product_key": "进化论稳泰对冲1号",
-          "clickable": true
+          "clickable": true,
+          "amount_wan": 30.0
         }
       ],
       "branch_rows": [
         {
           "month": "6月",
           "month_num": 6,
-          "branch": "济南解放东路",
-          "total_wan": 1823.0,
+          "branch": "莱阳昌山路",
+          "total_wan": 2481.0,
           "values": {
-            "c3": 0,
-            "c5": 101.0,
-            "c6": 512.0,
-            "c7": 1008.0,
-            "c8": 101.0,
-            "c9": 0.0,
-            "c11": 101.0,
-            "c12": 0.0
+            "明上增利": 2260.0,
+            "世纪前沿兴泰精选": 120.0,
+            "龙旗灵动": 101.0
+          }
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "branch": "济南解放东路",
+          "total_wan": 1621.0,
+          "values": {
+            "龙旗灵动": 806.0,
+            "展弘灵泰多策略9号": 101.0,
+            "弈倍兴泰锐进": 101.0,
+            "世纪前沿兴泰精选": 512.0,
+            "量客稳泰套利1号1期": 101.0
           }
         },
         {
@@ -4728,46 +4528,20 @@ const DATA = {
           "branch": "青岛香港西路",
           "total_wan": 1059.0,
           "values": {
-            "c3": 0,
-            "c5": 251.0,
-            "c6": 606.0,
-            "c7": 202.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "弈倍兴泰锐进": 251.0,
+            "世纪前沿兴泰精选": 606.0,
+            "龙旗灵动": 202.0
           }
         },
         {
           "month": "6月",
           "month_num": 6,
           "branch": "济南解放路",
-          "total_wan": 838.0,
+          "total_wan": 537.0,
           "values": {
-            "c3": 0,
-            "c5": 0.0,
-            "c6": 406.0,
-            "c7": 301.0,
-            "c8": 0.0,
-            "c9": 101.0,
-            "c11": 0.0,
-            "c12": 30.0
-          }
-        },
-        {
-          "month": "6月",
-          "month_num": 6,
-          "branch": "莱阳昌山路",
-          "total_wan": 221.0,
-          "values": {
-            "c3": 0,
-            "c5": 0.0,
-            "c6": 120.0,
-            "c7": 101.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "世纪前沿兴泰精选": 406.0,
+            "九坤兴泰进享1号": 101.0,
+            "进化论稳泰对冲1号": 30.0
           }
         },
         {
@@ -4776,46 +4550,7 @@ const DATA = {
           "branch": "烟台南大街",
           "total_wan": 101.0,
           "values": {
-            "c3": 0,
-            "c5": 0.0,
-            "c6": 101.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
-          }
-        },
-        {
-          "month": "6月",
-          "month_num": 6,
-          "branch": "临沂北京路",
-          "total_wan": 0.0,
-          "values": {
-            "c3": 0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
-          }
-        },
-        {
-          "month": "6月",
-          "month_num": 6,
-          "branch": "济南经七路",
-          "total_wan": 0.0,
-          "values": {
-            "c3": 0,
-            "c5": 0.0,
-            "c6": 0.0,
-            "c7": 0.0,
-            "c8": 0.0,
-            "c9": 0.0,
-            "c11": 0.0,
-            "c12": 0.0
+            "世纪前沿兴泰精选": 101.0
           }
         }
       ]
@@ -4825,2436 +4560,2156 @@ const DATA = {
     {
       "month": "1月",
       "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "王昭峰",
       "branch": "济南解放路",
-      "amount_wan": 585.8,
-      "customer_count": 4
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "刘俊",
-      "branch": "济南解放东路",
-      "amount_wan": 505.0,
-      "customer_count": 5
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "姜曰振",
-      "branch": "青岛香港西路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "王有乐",
-      "branch": "济南解放东路",
-      "amount_wan": 202.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "何鲁豪",
-      "branch": "济南解放路",
-      "amount_wan": 103.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "李新龙",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "连子豪",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "王凯",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "王帅",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "王钰翔",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
       "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "张慧君",
-      "branch": "烟台南大街",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "诚奇兴泰锐进系列",
-      "product_display": "诚奇兴泰锐进系列",
-      "product_key": "诚奇兴泰锐进",
-      "employee": "谢静",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "盛丰灵泰灵活对冲1号",
-      "product_display": "盛丰灵泰灵活对冲1号",
+      "product": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_display": "盛丰灵泰灵活对冲1号私募证券投资基金",
       "product_key": "盛丰灵泰灵活对冲1号",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 500.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "盛丰灵泰灵活对冲1号",
-      "product_display": "盛丰灵泰灵活对冲1号",
-      "product_key": "盛丰灵泰灵活对冲1号",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
       "amount_wan": 300.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "首发重点",
-      "product": "盛丰灵泰灵活对冲1号",
-      "product_display": "盛丰灵泰灵活对冲1号",
-      "product_key": "盛丰灵泰灵活对冲1号",
-      "employee": "任敬业",
-      "branch": "济南解放东路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "盛丰灵泰灵活对冲1号",
-      "product_display": "盛丰灵泰灵活对冲1号",
-      "product_key": "盛丰灵泰灵活对冲1号",
-      "employee": "郝明辉",
       "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "盛丰灵泰灵活对冲1号",
-      "product_display": "盛丰灵泰灵活对冲1号",
+      "employee": "宋旭东",
+      "product": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_display": "盛丰灵泰灵活对冲1号私募证券投资基金",
       "product_key": "盛丰灵泰灵活对冲1号",
-      "employee": "迟家鸣",
-      "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 606.0,
-      "customer_count": 6
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "张慧君",
-      "branch": "烟台南大街",
       "amount_wan": 500.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "刘俊",
-      "branch": "济南解放东路",
-      "amount_wan": 404.0,
-      "customer_count": 3
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "宋旭东",
       "branch": "莱阳昌山路",
-      "amount_wan": 308.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "孙丽丽",
-      "branch": "济南解放路",
-      "amount_wan": 297.0,
-      "customer_count": 2
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "王昭峰",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "李陈修",
-      "branch": "青岛香港西路",
+      "employee": "迟家鸣",
+      "product": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_display": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_key": "盛丰灵泰灵活对冲1号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "张晶晶",
-      "branch": "青岛香港西路",
+      "branch": "莱阳昌山路",
+      "employee": "郝明辉",
+      "product": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_display": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_key": "盛丰灵泰灵活对冲1号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "首发重点",
-      "product": "龙旗锐泰一号2、3期",
-      "product_display": "龙旗锐泰一号2、3期",
-      "product_key": "龙旗锐泰一号23期",
-      "employee": "张志远",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "1月",
-      "month_num": 1,
-      "category": "持营重点",
-      "product": "展弘灵泰多策略3号",
-      "product_display": "展弘灵泰多策略3号",
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "展弘灵泰多策略3号私募证券投资基金",
+      "product_display": "展弘灵泰多策略3号私募证券投资基金",
       "product_key": "展弘灵泰多策略3号",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
       "amount_wan": 1302.0,
       "customer_count": 2
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "其他零售",
-      "product": "龙旗锐泰一号1期",
-      "product_display": "龙旗锐泰一号1期",
-      "product_key": "龙旗锐泰一号1期",
-      "employee": "刘红霞",
       "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 702.0,
+      "customer_count": 3
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 606.0,
+      "customer_count": 6
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "孙丽丽",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 297.0,
+      "customer_count": 2
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "烟台南大街",
+      "employee": "张慧君",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
       "amount_wan": 500.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "其他零售",
-      "product": "诚奇兴泰锐进1号",
-      "product_display": "诚奇兴泰锐进1号",
-      "product_key": "诚奇兴泰锐进1号",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 308.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "青岛香港西路",
+      "employee": "张志远",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "其他零售",
-      "product": "倍漾兴泰锐进2号5期",
-      "product_display": "倍漾兴泰锐进2号5期",
-      "product_key": "倍漾兴泰锐进2号5期",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 100.0,
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "1月",
       "month_num": 1,
-      "category": "其他零售",
-      "product": "启林兴泰锐进心享1号",
-      "product_display": "启林兴泰锐进心享1号",
-      "product_key": "启林兴泰锐进心享1号",
-      "employee": "刘硕",
+      "branch": "青岛香港西路",
+      "employee": "张晶晶",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放东路",
+      "employee": "刘俊",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
+      "amount_wan": 404.0,
+      "customer_count": 4
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放东路",
+      "employee": "任敬业",
+      "product": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_display": "盛丰灵泰灵活对冲1号私募证券投资基金",
+      "product_key": "盛丰灵泰灵活对冲1号",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放东路",
+      "employee": "刘俊",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 505.0,
+      "customer_count": 5
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放东路",
+      "employee": "王钰翔",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放东路",
+      "employee": "王有乐",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 202.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "青岛香港西路",
+      "employee": "姜曰振",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "青岛香港西路",
+      "employee": "王帅",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "青岛香港西路",
+      "employee": "连子豪",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
       "branch": "济南经七路",
+      "employee": "李新龙",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南经七路",
+      "employee": "王凯",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南经七路",
+      "employee": "谢静",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "陈传翠",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 303.0,
+      "customer_count": 3
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 585.8,
+      "customer_count": 4
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "何鲁豪",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 103.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "烟台南大街",
+      "employee": "张慧君",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南经七路",
+      "employee": "刘硕",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
       "amount_wan": 30.0,
+      "customer_count": 1
+    },
+    {
+      "month": "1月",
+      "month_num": 1,
+      "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "倍漾兴泰锐进2号5期私募证券投资基金",
+      "product_display": "倍漾兴泰锐进2号5期私募证券投资基金",
+      "product_key": "倍漾兴泰锐进2号5期",
+      "amount_wan": 100.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "郗立苹",
       "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放路",
+      "employee": "邢明星",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
       "amount_wan": 400.0,
       "customer_count": 2
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
+      "branch": "济南解放路",
+      "employee": "陈传翠",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
       "product_key": "赫富兴泰锐进",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 302.0,
+      "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
+      "branch": "济南解放路",
+      "employee": "杜晶",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
       "product_key": "赫富兴泰锐进",
-      "employee": "李陈修",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放路",
+      "employee": "孙丽丽",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放路",
+      "employee": "李越美",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
       "branch": "青岛香港西路",
+      "employee": "张志远",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
       "amount_wan": 212.0,
       "customer_count": 2
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "孙丽丽",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "张志远",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "邢明星",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
-      "product_key": "赫富兴泰锐进",
-      "employee": "姜建成",
       "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
+      "employee": "宋旭东",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
       "product_key": "赫富兴泰锐进",
-      "employee": "杜晶",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
+      "amount_wan": 302.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "赫富兴泰锐进系列",
-      "product_display": "赫富兴泰锐进系列",
+      "branch": "莱阳昌山路",
+      "employee": "姜建成",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
       "product_key": "赫富兴泰锐进",
-      "employee": "李越美",
-      "branch": "济南解放路",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "申毅稳泰千里马系列",
-      "product_display": "申毅稳泰千里马系列",
-      "product_key": "申毅稳泰千里马",
-      "employee": "林子渊",
       "branch": "济南解放东路",
+      "employee": "马晶",
+      "product": "申毅稳泰千里马",
+      "product_display": "申毅稳泰千里马",
+      "product_key": "申毅稳泰千里马",
+      "amount_wan": 100.5,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放东路",
+      "employee": "林子渊",
+      "product": "申毅稳泰千里马",
+      "product_display": "申毅稳泰千里马",
+      "product_key": "申毅稳泰千里马",
       "amount_wan": 500.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "申毅稳泰千里马系列",
-      "product_display": "申毅稳泰千里马系列",
+      "branch": "济南解放东路",
+      "employee": "马婷婷",
+      "product": "申毅稳泰千里马",
+      "product_display": "申毅稳泰千里马",
       "product_key": "申毅稳泰千里马",
-      "employee": "郗立苹",
+      "amount_wan": 100.5,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
       "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "申毅稳泰千里马",
+      "product_display": "申毅稳泰千里马",
+      "product_key": "申毅稳泰千里马",
+      "amount_wan": 100.5,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "申毅稳泰千里马",
+      "product_display": "申毅稳泰千里马",
+      "product_key": "申毅稳泰千里马",
       "amount_wan": 200.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "首发重点",
-      "product": "申毅稳泰千里马系列",
-      "product_display": "申毅稳泰千里马系列",
-      "product_key": "申毅稳泰千里马",
-      "employee": "马婷婷",
-      "branch": "济南解放东路",
-      "amount_wan": 100.5,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "申毅稳泰千里马系列",
-      "product_display": "申毅稳泰千里马系列",
-      "product_key": "申毅稳泰千里马",
-      "employee": "王昭峰",
-      "branch": "济南解放路",
-      "amount_wan": 100.5,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "申毅稳泰千里马系列",
-      "product_display": "申毅稳泰千里马系列",
-      "product_key": "申毅稳泰千里马",
-      "employee": "马晶",
-      "branch": "济南解放东路",
-      "amount_wan": 100.5,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "千衍兴泰锐进六和62号",
-      "product_display": "千衍兴泰锐进六和62号",
-      "product_key": "千衍兴泰锐进六和62号",
-      "employee": "杜晶",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "首发重点",
-      "product": "千衍兴泰锐进六和62号",
-      "product_display": "千衍兴泰锐进六和62号",
-      "product_key": "千衍兴泰锐进六和62号",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "2月",
-      "month_num": 2,
-      "category": "持营重点",
-      "product": "衍复兴泰中证全指3号",
-      "product_display": "衍复兴泰中证全指3号",
-      "product_key": "衍复兴泰中证全指3号",
-      "employee": "冯玉萍",
       "branch": "青岛香港西路",
+      "employee": "冯玉萍",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "其他零售",
-      "product": "九坤兴泰进享8号",
-      "product_display": "九坤兴泰进享8号",
-      "product_key": "九坤兴泰进享8号",
-      "employee": "刘俊",
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 106.0,
+      "customer_count": 1
+    },
+    {
+      "month": "2月",
+      "month_num": 2,
       "branch": "济南解放东路",
+      "employee": "刘俊",
+      "product": "九坤兴泰进享8号私募证券投资基金",
+      "product_display": "九坤兴泰进享8号私募证券投资基金",
+      "product_key": "九坤兴泰进享8号",
       "amount_wan": 171.7,
       "customer_count": 1
     },
     {
       "month": "2月",
       "month_num": 2,
-      "category": "其他零售",
-      "product": "天演兴泰1号",
-      "product_display": "天演兴泰1号",
-      "product_key": "天演兴泰1号",
-      "employee": "李陈修",
-      "branch": "青岛香港西路",
-      "amount_wan": 106.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "王昭峰",
       "branch": "济南解放路",
-      "amount_wan": 603.5,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 501.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 471.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "王钰翔",
-      "branch": "济南解放东路",
-      "amount_wan": 404.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "王凯",
-      "branch": "济南经七路",
-      "amount_wan": 252.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "王琦",
-      "branch": "青岛香港西路",
-      "amount_wan": 233.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "李陈修",
-      "branch": "青岛香港西路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 106.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "伊长锁",
-      "branch": "济南解放东路",
+      "employee": "杜晶",
+      "product": "千衍兴泰锐进六和62号私募证券投资基金",
+      "product_display": "千衍兴泰锐进六和62号私募证券投资基金",
+      "product_key": "千衍兴泰锐进六和62号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "李雪茹",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
-      "employee": "杨佳佳",
-      "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "战略级",
-      "product": "黑翼灵泰精选多策略",
-      "product_display": "黑翼灵泰精选多策略",
-      "product_key": "黑翼灵泰精选多策略",
+      "month": "2月",
+      "month_num": 2,
+      "branch": "济南解放路",
       "employee": "陈传翠",
-      "branch": "济南解放路",
+      "product": "千衍兴泰锐进六和62号私募证券投资基金",
+      "product_display": "千衍兴泰锐进六和62号私募证券投资基金",
+      "product_key": "千衍兴泰锐进六和62号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "谢印康",
-      "branch": "临沂北京路",
-      "amount_wan": 402.0,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
+      "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "王昭峰",
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
       "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "青岛香港西路",
+      "employee": "张晶晶",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 200.0,
+      "branch": "青岛香港西路",
+      "employee": "徐宇宸",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "刘红霞",
+      "branch": "青岛香港西路",
+      "employee": "连子豪",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "临沂北京路",
+      "employee": "卓德凤",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "临沂北京路",
+      "employee": "谢印康",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
+      "amount_wan": 402.0,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
       "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
       "amount_wan": 104.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "孙丽丽",
       "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "卓德凤",
-      "branch": "临沂北京路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "启林兴泰锐进心享3、5",
-      "product_display": "启林兴泰锐进心享3、5",
-      "product_key": "启林兴泰锐进心享35",
-      "employee": "张志远",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
       "employee": "王昭峰",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
+      "amount_wan": 202.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "郗立苹",
       "branch": "济南解放路",
+      "employee": "孙丽丽",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "莱阳昌山路",
+      "employee": "迟家鸣",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
+      "amount_wan": 80.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
       "amount_wan": 200.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "徐宇宸",
       "branch": "青岛香港西路",
+      "employee": "张志远",
+      "product": "启林兴泰锐进心享",
+      "product_display": "启林兴泰锐进心享",
+      "product_key": "启林兴泰锐进心享",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "张晶晶",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "何鲁豪",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "刘俊",
       "branch": "济南解放东路",
+      "employee": "王钰翔",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 404.0,
+      "customer_count": 3
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放东路",
+      "employee": "伊长锁",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放东路",
+      "employee": "李雪茹",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 106.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 603.5,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 501.0,
+      "customer_count": 3
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "陈传翠",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南经七路",
+      "employee": "王凯",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 252.0,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 471.0,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "莱阳昌山路",
+      "employee": "杨佳佳",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
       "amount_wan": 202.0,
       "customer_count": 2
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "王坤",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "张慧君",
-      "branch": "烟台南大街",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "杜晶",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "连子豪",
       "branch": "青岛香港西路",
-      "amount_wan": 101.0,
+      "employee": "王琦",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
+      "amount_wan": 233.0,
       "customer_count": 1
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "首发重点",
-      "product": "衍复兴泰中证全指系列",
-      "product_display": "衍复兴泰中证全指系列",
-      "product_key": "衍复兴泰中证全指",
-      "employee": "王军",
       "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "展弘灵泰多策略2号私募证券投资基金",
+      "product_display": "展弘灵泰多策略2号私募证券投资基金",
+      "product_key": "展弘灵泰多策略2号",
+      "amount_wan": 1050.5,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "王军",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
       "amount_wan": 251.0,
       "customer_count": 2
     },
     {
       "month": "3月",
       "month_num": 3,
-      "category": "持营重点",
-      "product": "展弘灵泰多策略2号",
-      "product_display": "展弘灵泰多策略2号",
-      "product_key": "展弘灵泰多策略2号",
-      "employee": "刘红霞",
       "branch": "济南解放路",
-      "amount_wan": 1050.5,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "持营重点",
-      "product": "启林稳泰对冲心享1号",
-      "product_display": "启林稳泰对冲心享1号",
-      "product_key": "启林稳泰对冲心享1号",
-      "employee": "谢印康",
-      "branch": "临沂北京路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "其他零售",
-      "product": "赫富兴泰锐进1号5期",
-      "product_display": "赫富兴泰锐进1号5期",
-      "product_key": "赫富兴泰锐进1号5期",
       "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "其他零售",
-      "product": "诚奇兴泰锐进2号",
-      "product_display": "诚奇兴泰锐进2号",
-      "product_key": "诚奇兴泰锐进2号",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "3月",
-      "month_num": 3,
-      "category": "其他零售",
-      "product": "启林兴泰锐进心享2号",
-      "product_display": "启林兴泰锐进心享2号",
-      "product_key": "启林兴泰锐进心享2号",
-      "employee": "迟家鸣",
-      "branch": "莱阳昌山路",
-      "amount_wan": 80.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "王迪",
-      "branch": "莱阳昌山路",
-      "amount_wan": 300.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "谢印康",
-      "branch": "临沂北京路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
       "amount_wan": 200.0,
       "customer_count": 1
     },
     {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "冯玉萍",
-      "branch": "青岛香港西路",
-      "amount_wan": 151.5,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "路梦雪",
-      "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "郝明辉",
-      "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "李陈修",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "刘俊",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "王昭峰",
+      "month": "3月",
+      "month_num": 3,
       "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "陈昱辰",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "战略级",
-      "product": "天演兴泰系列",
-      "product_display": "天演兴泰系列",
-      "product_key": "天演兴泰",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "首发重点",
-      "product": "泓湖永泰均衡配置六号",
-      "product_display": "泓湖永泰均衡配置六号",
-      "product_key": "泓湖永泰均衡配置六号",
-      "employee": "王昭峰",
-      "branch": "济南解放路",
+      "employee": "陈传翠",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
       "amount_wan": 202.0,
       "customer_count": 2
     },
     {
-      "month": "4月",
-      "month_num": 4,
-      "category": "首发重点",
-      "product": "泓湖永泰均衡配置六号",
-      "product_display": "泓湖永泰均衡配置六号",
-      "product_key": "泓湖永泰均衡配置六号",
-      "employee": "孙丽丽",
+      "month": "3月",
+      "month_num": 3,
       "branch": "济南解放路",
+      "employee": "何鲁豪",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "杜晶",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "烟台南大街",
+      "employee": "张慧君",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放东路",
+      "employee": "王坤",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "济南解放东路",
+      "employee": "刘俊",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "3月",
+      "month_num": 3,
+      "branch": "临沂北京路",
+      "employee": "谢印康",
+      "product": "启林稳泰对冲心享1号私募证券投资基金",
+      "product_display": "启林稳泰对冲心享1号私募证券投资基金",
+      "product_key": "启林稳泰对冲心享1号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "首发重点",
-      "product": "泓湖永泰均衡配置六号",
-      "product_display": "泓湖永泰均衡配置六号",
-      "product_key": "泓湖永泰均衡配置六号",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "明上增利",
+      "product_display": "明上增利",
+      "product_key": "明上增利",
+      "amount_wan": 460.0,
+      "customer_count": 4
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "持营",
-      "product": "世纪前沿兴泰进取A期",
-      "product_display": "世纪前沿兴泰进取A期",
-      "product_key": "世纪前沿兴泰进取A期",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "明上增利",
+      "product_display": "明上增利",
+      "product_key": "明上增利",
       "amount_wan": 300.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "持营",
-      "product": "展弘灵泰多策略10号",
-      "product_display": "展弘灵泰多策略10号",
-      "product_key": "展弘灵泰多策略10号",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 601.0,
       "customer_count": 2
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "持营",
-      "product": "展弘灵泰多策略9号",
-      "product_display": "展弘灵泰多策略9号",
-      "product_key": "展弘灵泰多策略9号",
-      "employee": "谢静",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "持营",
-      "product": "展弘灵泰多策略2号",
-      "product_display": "展弘灵泰多策略2号",
-      "product_key": "展弘灵泰多策略2号",
-      "employee": "曲家妮",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "其他零售",
-      "product": " 龙旗锐泰一号1期",
-      "product_display": "龙旗锐泰一号1期",
-      "product_key": "龙旗锐泰一号1期",
-      "employee": "王有乐",
       "branch": "济南解放东路",
+      "employee": "王有乐",
+      "product": "龙旗锐泰一号",
+      "product_display": "龙旗锐泰一号",
+      "product_key": "龙旗锐泰一号",
       "amount_wan": 1000.0,
       "customer_count": 1
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "其他零售",
-      "product": "九坤股票多空配置58号",
-      "product_display": "九坤股票多空配置58号",
-      "product_key": "九坤股票多空配置58号",
-      "employee": "郗立苹",
       "branch": "济南解放路",
-      "amount_wan": 300.0,
-      "customer_count": 1
-    },
-    {
-      "month": "4月",
-      "month_num": 4,
-      "category": "其他零售",
-      "product": "黑翼灵泰精选多策略10号",
-      "product_display": "黑翼灵泰精选多策略10号",
-      "product_key": "黑翼灵泰精选多策略10号",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
+      "employee": "阴焕玲",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "其他零售",
-      "product": "诚奇兴泰锐进9号",
-      "product_display": "诚奇兴泰锐进9号",
-      "product_key": "诚奇兴泰锐进9号",
-      "employee": "何鲁豪",
       "branch": "济南解放路",
+      "employee": "何鲁豪",
+      "product": "诚奇兴泰锐进",
+      "product_display": "诚奇兴泰锐进",
+      "product_key": "诚奇兴泰锐进",
       "amount_wan": 2.0,
       "customer_count": 1
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "其他零售",
-      "product": "申毅稳泰千里马2号",
-      "product_display": "申毅稳泰千里马2号",
-      "product_key": "申毅稳泰千里马2号",
-      "employee": "王昭峰",
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "赫富兴泰锐进",
+      "product_display": "赫富兴泰锐进",
+      "product_key": "赫富兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "申毅稳泰千里马",
+      "product_display": "申毅稳泰千里马",
+      "product_key": "申毅稳泰千里马",
       "amount_wan": 550.0,
       "customer_count": 1
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "其他零售",
-      "product": "诚奇兴泰锐进1号",
-      "product_display": "诚奇兴泰锐进1号",
-      "product_key": "诚奇兴泰锐进1号",
-      "employee": "阴焕玲",
-      "branch": "济南解放路",
+      "branch": "青岛香港西路",
+      "employee": "冯玉萍",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 151.5,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "4月",
       "month_num": 4,
-      "category": "其他零售",
-      "product": "赫富兴泰锐进1号5期",
-      "product_display": "赫富兴泰锐进1号5期",
-      "product_key": "赫富兴泰锐进1号5期",
-      "employee": "郗立苹",
       "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 200.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "孙丽丽",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "宋晓洋",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
       "employee": "刘红霞",
-      "branch": "济南解放路",
+      "product": "黑翼灵泰精选多策略",
+      "product_display": "黑翼灵泰精选多策略",
+      "product_key": "黑翼灵泰精选多策略",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "张磊",
-      "branch": "济南解放东路",
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放路",
+      "employee": "孙丽丽",
+      "product": "泓湖永泰均衡配置六号",
+      "product_display": "泓湖永泰均衡配置六号",
+      "product_key": "泓湖永泰均衡配置六号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "郗立苹",
+      "month": "4月",
+      "month_num": 4,
       "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "邢明星",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "郗立苹",
-      "branch": "济南解放路",
-      "amount_wan": 2010.0,
-      "customer_count": 12
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
       "employee": "王昭峰",
-      "branch": "济南解放路",
-      "amount_wan": 705.0,
-      "customer_count": 4
+      "product": "泓湖永泰均衡配置六号",
+      "product_display": "泓湖永泰均衡配置六号",
+      "product_key": "泓湖永泰均衡配置六号",
+      "amount_wan": 202.0,
+      "customer_count": 2
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "陈传翠",
+      "month": "4月",
+      "month_num": 4,
       "branch": "济南解放路",
-      "amount_wan": 604.0,
-      "customer_count": 5
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
       "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 404.0,
-      "customer_count": 3
+      "product": "泓湖永泰均衡配置六号",
+      "product_display": "泓湖永泰均衡配置六号",
+      "product_key": "泓湖永泰均衡配置六号",
+      "amount_wan": 101.0,
+      "customer_count": 1
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 200.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "临沂北京路",
+      "employee": "谢印康",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 300.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "莱阳昌山路",
       "employee": "郝明辉",
-      "branch": "莱阳昌山路",
-      "amount_wan": 404.0,
-      "customer_count": 4
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 330.0,
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "张晶晶",
-      "branch": "青岛香港西路",
-      "amount_wan": 313.1,
-      "customer_count": 3
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "杜晶",
-      "branch": "济南解放路",
-      "amount_wan": 301.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "王迪",
+      "month": "4月",
+      "month_num": 4,
       "branch": "莱阳昌山路",
-      "amount_wan": 300.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "谢静",
-      "branch": "济南经七路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "卓德凤",
-      "branch": "临沂北京路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "徐宇宸",
-      "branch": "青岛香港西路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "于铭玮",
-      "branch": "莱阳昌山路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "孙丽丽",
-      "branch": "济南解放路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "高发芹",
-      "branch": "临沂北京路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "林子渊",
-      "branch": "济南解放东路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "任敬业",
-      "branch": "济南解放东路",
-      "amount_wan": 202.0,
-      "customer_count": 2
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "阴焕玲",
-      "branch": "济南解放路",
-      "amount_wan": 131.4999,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "王帅",
-      "branch": "青岛香港西路",
-      "amount_wan": 121.2,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
       "employee": "路梦雪",
-      "branch": "莱阳昌山路",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "张慧君",
-      "branch": "烟台南大街",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "杨飞",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "李越美",
+      "month": "4月",
+      "month_num": 4,
       "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "何鲁豪",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "伊长锁",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "王琦",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "李新龙",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "赵晓娜",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "连子豪",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "姜建成",
-      "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "九坤兴泰进取系列",
-      "product_display": "九坤兴泰进取系列",
-      "product_key": "九坤兴泰进取",
-      "employee": "张亚芳",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "进化论三维锐泰1号",
-      "product_display": "进化论三维锐泰1号",
-      "product_key": "进化论三维锐泰1号",
-      "employee": "李陈修",
-      "branch": "青岛香港西路",
-      "amount_wan": 500.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "进化论三维锐泰1号",
-      "product_display": "进化论三维锐泰1号",
-      "product_key": "进化论三维锐泰1号",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 410.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "进化论三维锐泰1号",
-      "product_display": "进化论三维锐泰1号",
-      "product_key": "进化论三维锐泰1号",
       "employee": "郗立苹",
-      "branch": "济南解放路",
+      "product": "九坤股票多空配置58号",
+      "product_display": "九坤股票多空配置58号",
+      "product_key": "九坤股票多空配置58号",
       "amount_wan": 300.0,
       "customer_count": 1
     },
     {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "进化论三维锐泰1号",
-      "product_display": "进化论三维锐泰1号",
-      "product_key": "进化论三维锐泰1号",
-      "employee": "任敬业",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "宋晓洋",
-      "branch": "济南经七路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "孙丽丽",
+      "month": "4月",
+      "month_num": 4,
       "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "陈传翠",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "张磊",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "刘红霞",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
       "employee": "郗立苹",
+      "product": "世纪前沿兴泰进取A期私募证券投资基金",
+      "product_display": "世纪前沿兴泰进取A期私募证券投资基金",
+      "product_key": "世纪前沿兴泰进取A期",
+      "amount_wan": 300.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放东路",
+      "employee": "陈昱辰",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南解放东路",
+      "employee": "刘俊",
+      "product": "天演兴泰",
+      "product_display": "天演兴泰",
+      "product_key": "天演兴泰",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "展弘灵泰多策略10号私募证券投资基金",
+      "product_display": "展弘灵泰多策略10号私募证券投资基金",
+      "product_key": "展弘灵泰多策略10号",
+      "amount_wan": 601.0,
+      "customer_count": 2
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "济南经七路",
+      "employee": "谢静",
+      "product": "展弘灵泰多策略9号私募证券投资基金",
+      "product_display": "展弘灵泰多策略9号私募证券投资基金",
+      "product_key": "展弘灵泰多策略9号",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "4月",
+      "month_num": 4,
+      "branch": "青岛香港西路",
+      "employee": "曲家妮",
+      "product": "展弘灵泰多策略2号私募证券投资基金",
+      "product_display": "展弘灵泰多策略2号私募证券投资基金",
+      "product_key": "展弘灵泰多策略2号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "5月",
       "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "邢明星",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "首发重点",
-      "product": "知行通达兴泰汇智量选系列",
-      "product_display": "知行通达兴泰汇智量选系列",
-      "product_key": "知行通达兴泰汇智量选",
-      "employee": "宋旭东",
       "branch": "莱阳昌山路",
+      "employee": "王迪",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
       "amount_wan": 200.0,
       "customer_count": 1
     },
     {
       "month": "5月",
       "month_num": 5,
-      "category": "持营",
-      "product": "展弘灵泰多策略2号",
-      "product_display": "展弘灵泰多策略2号",
-      "product_key": "展弘灵泰多策略2号",
-      "employee": "宋旭东",
+      "branch": "济南经七路",
+      "employee": "宋晓洋",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放东路",
+      "employee": "张磊",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "孙丽丽",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "陈传翠",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "邢明星",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "知行通达兴泰汇智量选",
+      "product_display": "知行通达兴泰汇智量选",
+      "product_key": "知行通达兴泰汇智量选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "烟台南大街",
+      "employee": "张慧君",
+      "product": "明上增利",
+      "product_display": "明上增利",
+      "product_key": "明上增利",
+      "amount_wan": 100.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "青岛香港西路",
+      "employee": "王帅",
+      "product": "衍复兴泰中证全指",
+      "product_display": "衍复兴泰中证全指",
+      "product_key": "衍复兴泰中证全指",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
       "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "展弘灵泰多策略2号私募证券投资基金",
+      "product_display": "展弘灵泰多策略2号私募证券投资基金",
+      "product_key": "展弘灵泰多策略2号",
       "amount_wan": 3000.0,
       "customer_count": 1
     },
     {
       "month": "5月",
       "month_num": 5,
-      "category": "持营",
-      "product": "展弘灵泰多策略2号",
-      "product_display": "展弘灵泰多策略2号",
-      "product_key": "展弘灵泰多策略2号",
-      "employee": "谢印康",
-      "branch": "临沂北京路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "持营",
-      "product": "展弘灵泰多策略9号",
-      "product_display": "展弘灵泰多策略9号",
-      "product_key": "展弘灵泰多策略9号",
-      "employee": "王坤",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "5月",
-      "month_num": 5,
-      "category": "其他零售",
-      "product": "衍复兴泰中证全指9号",
-      "product_display": "衍复兴泰中证全指9号",
-      "product_key": "衍复兴泰中证全指9号",
-      "employee": "王帅",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "弈倍兴泰锐进系列",
-      "product_display": "弈倍兴泰锐进系列",
-      "product_key": "弈倍兴泰锐进",
-      "employee": "李陈修",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "弈倍兴泰锐进系列",
-      "product_display": "弈倍兴泰锐进系列",
-      "product_key": "弈倍兴泰锐进",
-      "employee": "任敬业",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "弈倍兴泰锐进系列",
-      "product_display": "弈倍兴泰锐进系列",
-      "product_key": "弈倍兴泰锐进",
-      "employee": "冯玉萍",
-      "branch": "青岛香港西路",
-      "amount_wan": 150.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "王昭峰",
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "进化论三维锐泰1号私募证券投资基金",
+      "product_display": "进化论三维锐泰1号私募证券投资基金",
+      "product_key": "进化论三维锐泰1号",
+      "amount_wan": 300.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "临沂北京路",
+      "employee": "谢印康",
+      "product": "展弘灵泰多策略2号私募证券投资基金",
+      "product_display": "展弘灵泰多策略2号私募证券投资基金",
+      "product_key": "展弘灵泰多策略2号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "张慧君",
-      "branch": "烟台南大街",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "张晶晶",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "王琦",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "刘俊",
+      "month": "5月",
+      "month_num": 5,
       "branch": "济南解放东路",
+      "employee": "任敬业",
+      "product": "进化论三维锐泰1号私募证券投资基金",
+      "product_display": "进化论三维锐泰1号私募证券投资基金",
+      "product_key": "进化论三维锐泰1号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "冯玉萍",
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "进化论三维锐泰1号私募证券投资基金",
+      "product_display": "进化论三维锐泰1号私募证券投资基金",
+      "product_key": "进化论三维锐泰1号",
+      "amount_wan": 410.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
       "branch": "青岛香港西路",
-      "amount_wan": 303.0,
+      "employee": "李陈修",
+      "product": "进化论三维锐泰1号私募证券投资基金",
+      "product_display": "进化论三维锐泰1号私募证券投资基金",
+      "product_key": "进化论三维锐泰1号",
+      "amount_wan": 500.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放东路",
+      "employee": "林子渊",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放东路",
+      "employee": "任敬业",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放东路",
+      "employee": "季现坤",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放东路",
+      "employee": "张亚芳",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放东路",
+      "employee": "伊长锁",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "青岛香港西路",
+      "employee": "张晶晶",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 313.1,
       "customer_count": 3
     },
     {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "徐宇宸",
+      "month": "5月",
+      "month_num": 5,
       "branch": "青岛香港西路",
+      "employee": "徐宇宸",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "青岛香港西路",
+      "employee": "连子豪",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
+      "month": "5月",
+      "month_num": 5,
+      "branch": "青岛香港西路",
+      "employee": "杨飞",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "青岛香港西路",
+      "employee": "王帅",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 121.2,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "青岛香港西路",
+      "employee": "王琦",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "孙丽丽",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
       "employee": "郗立苹",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 2010.0,
+      "customer_count": 12
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
       "branch": "济南解放路",
-      "amount_wan": 200.0,
+      "employee": "陈传翠",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 604.0,
+      "customer_count": 5
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "刘红霞",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 303.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "阴焕玲",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 131.4999,
       "customer_count": 1
     },
     {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "张磊",
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "雷柳",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 705.0,
+      "customer_count": 4
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "杜晶",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 301.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "何鲁豪",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南解放路",
+      "employee": "李越美",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "于铭玮",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "王迪",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 300.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "郝明辉",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 404.0,
+      "customer_count": 4
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 330.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "姜建成",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "莱阳昌山路",
+      "employee": "路梦雪",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南经七路",
+      "employee": "赵晓娜",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南经七路",
+      "employee": "李新龙",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "济南经七路",
+      "employee": "谢静",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "临沂北京路",
+      "employee": "高发芹",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "临沂北京路",
+      "employee": "卓德凤",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 202.0,
+      "customer_count": 2
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
+      "branch": "烟台南大街",
+      "employee": "张慧君",
+      "product": "九坤兴泰进取",
+      "product_display": "九坤兴泰进取",
+      "product_key": "九坤兴泰进取",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "5月",
+      "month_num": 5,
       "branch": "济南解放东路",
+      "employee": "王坤",
+      "product": "展弘灵泰多策略9号私募证券投资基金",
+      "product_display": "展弘灵泰多策略9号私募证券投资基金",
+      "product_key": "展弘灵泰多策略9号",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "李雪茹",
       "branch": "济南解放东路",
-      "amount_wan": 310.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "宋旭东",
-      "branch": "莱阳昌山路",
-      "amount_wan": 120.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "世纪前沿兴泰精选系列",
-      "product_display": "世纪前沿兴泰精选系列",
-      "product_key": "世纪前沿兴泰精选",
-      "employee": "阴焕玲",
-      "branch": "济南解放路",
-      "amount_wan": 105.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
+      "employee": "王有乐",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
       "product_key": "龙旗灵动",
-      "employee": "张磊",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
       "branch": "济南解放东路",
+      "employee": "马晶",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放东路",
+      "employee": "张磊",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
       "amount_wan": 202.0,
       "customer_count": 2
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "连子豪",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "姜曰振",
-      "branch": "青岛香港西路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "王有乐",
       "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "姜建成",
-      "branch": "莱阳昌山路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "马晶",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
       "employee": "伊长锁",
-      "branch": "济南解放东路",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
+      "branch": "济南解放东路",
+      "employee": "张亚芳",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
       "product_key": "龙旗灵动",
-      "employee": "李越美",
-      "branch": "济南解放路",
       "amount_wan": 200.0,
       "customer_count": 1
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "张亚芳",
       "branch": "济南解放东路",
-      "amount_wan": 301.0,
+      "employee": "任敬业",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "明上增利",
+      "product_display": "明上增利",
+      "product_key": "明上增利",
+      "amount_wan": 2260.0,
       "customer_count": 2
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "任敬业",
       "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
-      "employee": "孙丽丽",
-      "branch": "济南解放路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "首发重点",
-      "product": "龙旗灵动系列",
-      "product_display": "龙旗灵动系列",
-      "product_key": "龙旗灵动",
       "employee": "王坤",
-      "branch": "济南解放东路",
-      "amount_wan": 101.0,
-      "customer_count": 1
-    },
-    {
-      "month": "6月",
-      "month_num": 6,
-      "category": "持营",
-      "product": "展弘灵泰多策略9号",
-      "product_display": "展弘灵泰多策略9号",
+      "product": "展弘灵泰多策略9号私募证券投资基金",
+      "product_display": "展弘灵泰多策略9号私募证券投资基金",
       "product_key": "展弘灵泰多策略9号",
-      "employee": "王坤",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "冯玉萍",
+      "product": "弈倍兴泰锐进",
+      "product_display": "弈倍兴泰锐进",
+      "product_key": "弈倍兴泰锐进",
+      "amount_wan": 150.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "李陈修",
+      "product": "弈倍兴泰锐进",
+      "product_display": "弈倍兴泰锐进",
+      "product_key": "弈倍兴泰锐进",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
       "branch": "济南解放东路",
+      "employee": "任敬业",
+      "product": "弈倍兴泰锐进",
+      "product_display": "弈倍兴泰锐进",
+      "product_key": "弈倍兴泰锐进",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "持营",
-      "product": "九坤兴泰进享1号",
-      "product_display": "九坤兴泰进享1号",
-      "product_key": "九坤兴泰进享1号",
-      "employee": "郗立苹",
+      "branch": "青岛香港西路",
+      "employee": "张晶晶",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "王琦",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "冯玉萍",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 303.0,
+      "customer_count": 3
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "徐宇宸",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 200.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放路",
+      "employee": "阴焕玲",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 105.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放路",
+      "employee": "王昭峰",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "其他零售",
-      "product": "量客稳泰套利1号1期",
-      "product_display": "量客稳泰套利1号1期",
-      "product_key": "量客稳泰套利1号1期",
+      "branch": "济南解放东路",
+      "employee": "李雪茹",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 310.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放东路",
+      "employee": "刘俊",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放东路",
+      "employee": "张磊",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "烟台南大街",
+      "employee": "张慧君",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "莱阳昌山路",
+      "employee": "宋旭东",
+      "product": "世纪前沿兴泰精选",
+      "product_display": "世纪前沿兴泰精选",
+      "product_key": "世纪前沿兴泰精选",
+      "amount_wan": 120.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "姜曰振",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "青岛香港西路",
+      "employee": "连子豪",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "莱阳昌山路",
+      "employee": "姜建成",
+      "product": "龙旗灵动",
+      "product_display": "龙旗灵动",
+      "product_key": "龙旗灵动",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放东路",
       "employee": "赵晶晶",
-      "branch": "济南解放东路",
+      "product": "量客稳泰套利1号1期私募证券投资基金",
+      "product_display": "量客稳泰套利1号1期私募证券投资基金",
+      "product_key": "量客稳泰套利1号1期",
       "amount_wan": 101.0,
       "customer_count": 1
     },
     {
       "month": "6月",
       "month_num": 6,
-      "category": "其他零售",
-      "product": "进化论稳泰对冲1号",
-      "product_display": "进化论稳泰对冲1号",
-      "product_key": "进化论稳泰对冲1号",
-      "employee": "郗立苹",
       "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "九坤兴泰进享1号私募证券投资基金",
+      "product_display": "九坤兴泰进享1号私募证券投资基金",
+      "product_key": "九坤兴泰进享1号",
+      "amount_wan": 101.0,
+      "customer_count": 1
+    },
+    {
+      "month": "6月",
+      "month_num": 6,
+      "branch": "济南解放路",
+      "employee": "郗立苹",
+      "product": "进化论稳泰对冲1号私募证券投资基金",
+      "product_display": "进化论稳泰对冲1号私募证券投资基金",
+      "product_key": "进化论稳泰对冲1号",
       "amount_wan": 30.0,
       "customer_count": 1
     }
@@ -7931,25 +7386,25 @@ const DATA = {
         {
           "month": "1月",
           "month_num": 1,
-          "amount_2026_wan": 10489.8,
+          "amount_2026_wan": 8666.8,
           "amount_2025_wan": 10281.5
         },
         {
           "month": "2月",
           "month_num": 2,
-          "amount_2026_wan": 1582.2,
+          "amount_2026_wan": 3405.2,
           "amount_2025_wan": 1308.6199000000001
         },
         {
           "month": "3月",
           "month_num": 3,
-          "amount_2026_wan": 9089.0,
+          "amount_2026_wan": 8786.0,
           "amount_2025_wan": 2032.0
         },
         {
           "month": "4月",
           "month_num": 4,
-          "amount_2026_wan": 13559.5,
+          "amount_2026_wan": 13862.5,
           "amount_2025_wan": 1757.5
         },
         {
@@ -7972,13 +7427,13 @@ const DATA = {
         {
           "month": "1月",
           "month_num": 1,
-          "amount_2026_wan": 1020.0,
+          "amount_2026_wan": 707.0,
           "amount_2025_wan": 3413.0
         },
         {
           "month": "2月",
           "month_num": 2,
-          "amount_2026_wan": 207.0,
+          "amount_2026_wan": 520.0,
           "amount_2025_wan": 0
         },
         {
@@ -8013,13 +7468,13 @@ const DATA = {
         {
           "month": "1月",
           "month_num": 1,
-          "amount_2026_wan": 2715.0,
+          "amount_2026_wan": 2312.0,
           "amount_2025_wan": 1001.0
         },
         {
           "month": "2月",
           "month_num": 2,
-          "amount_2026_wan": 0,
+          "amount_2026_wan": 403.0,
           "amount_2025_wan": 0
         },
         {
@@ -8095,25 +7550,25 @@ const DATA = {
         {
           "month": "1月",
           "month_num": 1,
-          "amount_2026_wan": 4406.8,
+          "amount_2026_wan": 3299.8,
           "amount_2025_wan": 2914.0
         },
         {
           "month": "2月",
           "month_num": 2,
-          "amount_2026_wan": 502.5,
+          "amount_2026_wan": 1609.5,
           "amount_2025_wan": 1026.6199000000001
         },
         {
           "month": "3月",
           "month_num": 3,
-          "amount_2026_wan": 4432.0,
+          "amount_2026_wan": 4129.0,
           "amount_2025_wan": 1327.0
         },
         {
           "month": "4月",
           "month_num": 4,
-          "amount_2026_wan": 4786.0,
+          "amount_2026_wan": 5089.0,
           "amount_2025_wan": 303.0
         },
         {
@@ -8250,6 +7705,666 @@ const DATA = {
           "month_num": 6,
           "amount_2026_wan": 0,
           "amount_2025_wan": 202.0
+        }
+      ]
+    }
+  ],
+  "retailBranchMonthSales": [
+    {
+      "branch": "分公司整体",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 8666.8,
+          "amount_2025_wan": 1012.5
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 3405.2,
+          "amount_2025_wan": 1258.6199000000001
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 7686.0,
+          "amount_2025_wan": 2032.0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 5982.5,
+          "amount_2025_wan": 757.5
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 14072.7999,
+          "amount_2025_wan": 1006.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 5799.0,
+          "amount_2025_wan": 444.2
+        }
+      ]
+    },
+    {
+      "branch": "青岛香港西路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 707.0,
+          "amount_2025_wan": 209.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 520.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 839.0,
+          "amount_2025_wan": 402.0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 653.5,
+          "amount_2025_wan": 252.5
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 1540.3,
+          "amount_2025_wan": 101.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 1059.0,
+          "amount_2025_wan": 101.0
+        }
+      ]
+    },
+    {
+      "branch": "莱阳昌山路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 2312.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 403.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 852.0,
+          "amount_2025_wan": 101.0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 962.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 5048.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 2481.0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "济南解放东路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 1414.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 872.7,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 909.0,
+          "amount_2025_wan": 101.0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 1202.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 909.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 1621.0,
+          "amount_2025_wan": 40.2
+        }
+      ]
+    },
+    {
+      "branch": "济南解放路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 3299.8,
+          "amount_2025_wan": 401.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 1609.5,
+          "amount_2025_wan": 1026.6199000000001
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 4129.0,
+          "amount_2025_wan": 1327.0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 2862.0,
+          "amount_2025_wan": 303.0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 5364.4999,
+          "amount_2025_wan": 703.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 537.0,
+          "amount_2025_wan": 101.0
+        }
+      ]
+    },
+    {
+      "branch": "烟台南大街",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 601.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 101.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 201.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 101.0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "济南经七路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 333.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 252.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 101.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 505.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "临沂北京路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 402.5
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 232.0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 604.0,
+          "amount_2025_wan": 101.0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 202.0,
+          "amount_2025_wan": 202.0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 505.0,
+          "amount_2025_wan": 202.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 202.0
+        }
+      ]
+    }
+  ],
+  "customBranchMonthSales": [
+    {
+      "branch": "分公司整体",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 9269.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 50.0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 1100.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 7880.0,
+          "amount_2025_wan": 1000.0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 34800.0,
+          "amount_2025_wan": 3401.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 9700.0,
+          "amount_2025_wan": 1200.0
+        }
+      ]
+    },
+    {
+      "branch": "青岛香港西路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 3204.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 2209.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 100.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 8700.0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "莱阳昌山路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 1001.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 1327.0,
+          "amount_2025_wan": 1000.0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "济南解放东路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 650.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 815.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 400.0
+        }
+      ]
+    },
+    {
+      "branch": "济南解放路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 2513.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 2227.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 3200.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 1000.0,
+          "amount_2025_wan": 800.0
+        }
+      ]
+    },
+    {
+      "branch": "烟台南大街",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 200.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 50.0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 201.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 34800.0,
+          "amount_2025_wan": 101.0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "济南经七路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 701.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 101.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        }
+      ]
+    },
+    {
+      "branch": "临沂北京路",
+      "months": [
+        {
+          "month": "1月",
+          "month_num": 1,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 1000.0
+        },
+        {
+          "month": "2月",
+          "month_num": 2,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "3月",
+          "month_num": 3,
+          "amount_2026_wan": 1100.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "4月",
+          "month_num": 4,
+          "amount_2026_wan": 1000.0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "5月",
+          "month_num": 5,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
+        },
+        {
+          "month": "6月",
+          "month_num": 6,
+          "amount_2026_wan": 0,
+          "amount_2025_wan": 0
         }
       ]
     }
@@ -8407,6 +8522,62 @@ const DATA = {
     "match_rate": 0.4333818060872357
   },
   "coverageSnapshots": [
+    {
+      "date": "20241231",
+      "branch": "分公司整体",
+      "total": 2064.0,
+      "hold": 60.0,
+      "rate": 0.029069767441860465
+    },
+    {
+      "date": "20241231",
+      "branch": "青岛香港西路",
+      "total": 421.0,
+      "hold": 7.0,
+      "rate": 0.0166270783847981
+    },
+    {
+      "date": "20241231",
+      "branch": "莱阳昌山路",
+      "total": 250.0,
+      "hold": 8.0,
+      "rate": 0.032
+    },
+    {
+      "date": "20241231",
+      "branch": "济南解放东路",
+      "total": 399.0,
+      "hold": 12.0,
+      "rate": 0.03007518796992481
+    },
+    {
+      "date": "20241231",
+      "branch": "济南解放路",
+      "total": 581.0,
+      "hold": 20.0,
+      "rate": 0.03442340791738382
+    },
+    {
+      "date": "20241231",
+      "branch": "烟台南大街",
+      "total": 115.0,
+      "hold": 5.0,
+      "rate": 0.043478260869565216
+    },
+    {
+      "date": "20241231",
+      "branch": "济南经七路",
+      "total": 215.0,
+      "hold": 5.0,
+      "rate": 0.023255813953488372
+    },
+    {
+      "date": "20241231",
+      "branch": "临沂北京路",
+      "total": 83.0,
+      "hold": 3.0,
+      "rate": 0.03614457831325301
+    },
     {
       "date": "20250630",
       "branch": "分公司整体",
@@ -8971,11 +9142,55 @@ const diffPct = n=>`${n>=0?'+':''}${(Number(n||0)*100).toFixed(2)}%`;
 const el = id => document.getElementById(id);
 const months = ['1月','2月','3月','4月','5月','6月'];
 let selectedMonth = '汇总', selectedBranch = '分公司整体', selectedProductKey = '', selectedProductLabel = '';
+let customSelectedMonth = '汇总', customSelectedBranch = '分公司整体';
 let salesBranch = '分公司整体', coverageBranch = '分公司整体';
 const company = DATA.yoy.find(x=>x.branch==='分公司整体');
-el('kpis').innerHTML = `<div class="card"><div class="label">2026H1零售权益私募销售</div><div class="value good">${fmt(company.amount_wan/10000,2)}<span class="unit">亿元</span></div></div><div class="card"><div class="label">覆盖客户数</div><div class="value good">${fmt0(company.customer_count)}<span class="unit">户</span></div></div><div class="card"><div class="label">员工出单率</div><div class="value good">${pct(company.employee_order_rate,1)}</div></div><div class="card"><div class="label">20260630高净值私募覆盖率</div><div class="value good">${pct(DATA.coverageSnapshots.find(x=>x.date==='20260630'&&x.branch==='分公司整体').rate,2)}</div></div>`;
+el('kpis').innerHTML = `<div class="card"><div class="label">2026H1零售+定制权益私募销量</div><div class="value good">${fmt(company.amount_wan/10000,2)}<span class="unit">亿元</span></div></div><div class="card"><div class="label">覆盖客户数</div><div class="value good">${fmt0(company.customer_count)}<span class="unit">户</span></div></div><div class="card"><div class="label">员工出单率</div><div class="value good">${pct(company.employee_order_rate,1)}</div></div><div class="card"><div class="label">20260630高净值私募覆盖率</div><div class="value good">${pct(DATA.coverageSnapshots.find(x=>x.date==='20260630'&&x.branch==='分公司整体').rate,2)}</div></div>`;
 ['汇总',...months].forEach(m=>el('monthSelect').insertAdjacentHTML('beforeend',`<option>${m}</option>`)); el('monthSelect').value = selectedMonth;
+['汇总',...months].forEach(m=>el('customMonthSelect').insertAdjacentHTML('beforeend',`<option>${m}</option>`)); el('customMonthSelect').value = customSelectedMonth;
 function cleanHeaderLabel(v){ return String(v||'').replace(/[（(][^）)]*(?:\d{1,4}[.月/-]\d{1,2}|\d{3,8}|截止)[^）)]*[）)]/g,'').replace(/[（(]?\d{1,2}[.月/-]\d{1,2}\s*[-—至到]\s*\d{1,2}[.月/-]?\d{0,2}[）)]?/g,'').replace(/[（(]?\d{1,2}[.月/-]\d{1,2}(?:[.月/-]\d{1,2})?[）)]?/g,'').replace(/\s+/g,''); }
+function rowsToBranchMonthSummary(sourceRows){
+  const branchMap = new Map();
+  const monthTotals = new Map(months.map(m=>[m,{month:m,total:0,min:Infinity,max:-Infinity}]));
+  sourceRows.forEach(row=>{
+    const branch = row.branch || '未标注营业部';
+    const month = row.month;
+    const amount = row.amount_wan || 0;
+    if(!monthTotals.has(month)) return;
+    const branchRow = branchMap.get(branch) || {branch,total_wan:0,values:{}};
+    branchRow.values[month] = (branchRow.values[month] || 0) + amount;
+    branchRow.total_wan += amount;
+    branchMap.set(branch, branchRow);
+  });
+  const branchRows = [...branchMap.values()].sort((a,b)=>b.total_wan-a.total_wan);
+  const totalRow = {branch:'分公司整体', total_wan:0, values:{}};
+  branchRows.forEach(r=>{ totalRow.total_wan += r.total_wan; months.forEach(m=>{ totalRow.values[m] = (totalRow.values[m] || 0) + (r.values[m] || 0); }); });
+  branchRows.forEach(r=>months.forEach(m=>{ const stat = monthTotals.get(m); const v = r.values[m] || 0; stat.total += v; stat.min = Math.min(stat.min, v); stat.max = Math.max(stat.max, v); }));
+  const columns = months.map(m=>({key:m,label:m,stats:monthTotals.get(m)}));
+  return {month:'汇总', month_num:0, columns, branch_rows:[...branchRows,totalRow]};
+}
+function branchMonthSalesToSummary(sourceRows){
+  const rows = sourceRows || [];
+  const sourceByBranch = new Map(rows.map(r=>[r.branch,r]));
+  const branchRows = rows.filter(r=>r.branch!=='分公司整体').map(row=>{
+    const values = {};
+    (row.months || []).forEach(m=>{ values[m.month] = m.amount_2026_wan || 0; });
+    return {branch:row.branch,total_wan:months.reduce((s,m)=>s+(values[m]||0),0),values};
+  }).sort((a,b)=>b.total_wan-a.total_wan);
+  const companySource = sourceByBranch.get('分公司整体');
+  const totalRow = {branch:'分公司整体', total_wan:0, values:{}};
+  if(companySource){
+    (companySource.months || []).forEach(m=>{ totalRow.values[m.month] = m.amount_2026_wan || 0; });
+    totalRow.total_wan = months.reduce((s,m)=>s+(totalRow.values[m]||0),0);
+  } else {
+    branchRows.forEach(r=>{ totalRow.total_wan += r.total_wan; months.forEach(m=>{ totalRow.values[m] = (totalRow.values[m] || 0) + (r.values[m] || 0); }); });
+  }
+  const columns = months.map(m=>{
+    const vals = branchRows.map(r=>r.values[m] || 0);
+    return {key:m,label:m,stats:{total:totalRow.values[m] || 0,min:Math.min(...vals,0),max:Math.max(...vals,0)}};
+  });
+  return {month:'汇总', month_num:0, columns, branch_rows:[...branchRows,totalRow]};
+}
 function monthDataForView(){
   if(selectedMonth !== '汇总'){
     const monthData = DATA.retailMonths.find(x=>x.month===selectedMonth) || DATA.retailMonths[0];
@@ -8988,34 +9203,11 @@ function monthDataForView(){
         stats: { min: Math.min(...values, 0), max: Math.max(...values, 0) },
       };
     });
-    return { month: monthData.month, month_num: monthData.month_num, columns, branch_rows: branchRows };
+    const totalRow = {branch:'分公司整体', total_wan:0, values:{}};
+    branchRows.forEach(r=>{ totalRow.total_wan += r.total_wan; columns.forEach(c=>{ totalRow.values[c.key] = (totalRow.values[c.key] || 0) + (r.values[c.key] || 0); }); });
+    return { month: monthData.month, month_num: monthData.month_num, columns, branch_rows: [...branchRows,totalRow] };
   }
-  const branchMap = new Map();
-  const monthTotals = new Map(months.map(m=>[m,{month:m,total:0,min:Infinity,max:-Infinity}]));
-  const companySource = DATA.branchMonthSales.find(row=>row.branch==='分公司整体');
-  DATA.branchMonthSales.filter(row=>row.branch!=='分公司整体').forEach(row=>{
-    const monthsRow = row.months || [];
-    const total = monthsRow.reduce((s,x)=>s + (x.amount_2026_wan || 0), 0);
-    const values = {};
-    monthsRow.forEach(x=>{
-      values[x.month] = x.amount_2026_wan || 0;
-      const stat = monthTotals.get(x.month);
-      stat.total += x.amount_2026_wan || 0;
-      stat.min = Math.min(stat.min, x.amount_2026_wan || 0);
-      stat.max = Math.max(stat.max, x.amount_2026_wan || 0);
-    });
-    branchMap.set(row.branch,{branch:row.branch,total_wan:total,values});
-  });
-  const totalRow = {branch:'分公司整体', total_wan:0, values:{}};
-  const sourceMonths = companySource?.months || [];
-  if(sourceMonths.length){
-    sourceMonths.forEach(x=>{ totalRow.values[x.month] = x.amount_2026_wan || 0; totalRow.total_wan += x.amount_2026_wan || 0; });
-  } else {
-    [...branchMap.values()].forEach(r=>{ totalRow.total_wan += r.total_wan; months.forEach(m=>{ totalRow.values[m] = (totalRow.values[m] || 0) + (r.values[m] || 0); }); });
-  }
-  const branch_rows = [...branchMap.values()].sort((a,b)=>b.total_wan-a.total_wan);
-  const columns = months.map(m=>({key:m,label:m,stats:monthTotals.get(m)}));
-  return {month:'汇总', month_num:0, columns, branch_rows:[totalRow,...branch_rows]};
+  return branchMonthSalesToSummary(DATA.retailBranchMonthSales || []);
 }
 function monthCellStyle(v, stat){
   const min = stat?.min ?? 0, max = stat?.max ?? 1;
@@ -9035,7 +9227,8 @@ function renderMonthTable(){
   const colgroup = `<colgroup><col class="branchCol">${columns.map(()=>'<col class="productCol">').join('')}<col class="totalCol"></colgroup>`;
   const thead = '<thead><tr><th>营业部</th>'+columns.map(c=>`<th>${cleanHeaderLabel(c.label)}</th>`).join('')+'<th>汇总</th></tr></thead>';
   const showProduct = selectedMonth !== '汇总';
-  el('monthTable').innerHTML = colgroup + thead + '<tbody>' + rows.map(r=>`<tr class="clickable ${selectedBranch===r.branch?'selected':''}" data-branch="${r.branch}"><td class="branchCell">${r.branch}</td>${columns.map(c=>{ const v = r.values[c.key] || 0; const productKey = c.product_key || c.key; const selected = showProduct && selectedBranch===r.branch && selectedProductKey===productKey; const style = selectedMonth === '汇总' ? monthCellStyle(v,c.stats) : ''; return `<td class="amountCell ${selected?'selectedCell':''}" ${style} data-month="${c.key}" data-branch="${r.branch}" data-key="${productKey}" data-label="${cleanHeaderLabel(c.label)}">${v ? fmt0(v) : ''}</td>`; }).join('')}<td><b>${fmt0(r.total_wan)}</b></td></tr>`).join('') + '</tbody>';
+  el('monthTable').className = 'matrixTable';
+  el('monthTable').innerHTML = colgroup + thead + '<tbody>' + rows.map(r=>`<tr class="clickable ${r.branch==='分公司整体'?'companyRow':''} ${selectedBranch===r.branch?'selected':''}" data-branch="${r.branch}"><td class="branchCell">${r.branch}</td>${columns.map(c=>{ const v = r.values[c.key] || 0; const productKey = c.product_key || c.key; const selected = showProduct && selectedBranch===r.branch && selectedProductKey===productKey; const style = selectedMonth === '汇总' ? monthCellStyle(v,c.stats) : ''; return `<td class="amountCell ${selected?'selectedCell':''}" ${style} data-month="${c.key}" data-branch="${r.branch}" data-key="${productKey}" data-label="${cleanHeaderLabel(c.label)}">${v ? fmt0(v) : ''}</td>`; }).join('')}<td><b>${fmt0(r.total_wan)}</b></td></tr>`).join('') + '</tbody>';
   el('monthTable').style.width = Math.max(820, 104 + columns.length * 104 + 78) + 'px';
   el('monthTable').querySelectorAll('tbody tr').forEach(row=>row.addEventListener('click',()=>{ selectedBranch=row.dataset.branch; salesBranch=selectedBranch; selectedProductKey=''; selectedProductLabel=''; el('salesBranchSelect').value=salesBranch; renderMonthTable(); renderEmployees(); renderSalesSummary(); renderBranchMonthChart(); }));
   el('monthTable').querySelectorAll('.amountCell').forEach(cell=>cell.addEventListener('click',e=>{ e.stopPropagation(); selectedBranch=cell.dataset.branch; salesBranch=selectedBranch; if(selectedMonth==='汇总'){ selectedMonth=cell.dataset.month; selectedProductKey=''; selectedProductLabel=''; el('monthSelect').value=selectedMonth; } else { selectedProductKey=cell.dataset.key; selectedProductLabel=cell.dataset.label; } el('salesBranchSelect').value=salesBranch; renderMonthTable(); renderEmployees(); renderSalesSummary(); renderBranchMonthChart(); }));
@@ -9054,6 +9247,43 @@ function renderEmployees(){
   el('employeeRows').innerHTML = rows.length ? rows.map(r=>`<div class="employeeRow"><div class="employeeName">${r.employee}<div class="productName">${r.product}</div></div><div class="barTrack"><div class="barFill" style="width:${Math.max(3,r.amount_wan/max*100)}%"></div></div><div class="employeeTotal">${fmt0(r.amount_wan)}万<div class="mini">${r.customer_count}户</div></div></div>`).join('') : '<div class="note">该口径下未匹配到员工记录，可切换月份或营业部查看。</div>';
 }
 el('monthSelect').addEventListener('change',e=>{ selectedMonth=e.target.value; selectedProductKey=''; selectedProductLabel=''; renderMonthTable(); renderEmployees(); });
+
+function customMonthDataForView(){
+  if(customSelectedMonth === '汇总') return branchMonthSalesToSummary(DATA.customBranchMonthSales || []);
+  const monthData = DATA.customMonths.find(x=>x.month===customSelectedMonth) || {columns:[],branch_rows:[]};
+  const branchRows = monthData.branch_rows || [];
+  const columns = (monthData.columns || []).map(c=>({...c,label:cleanHeaderLabel(c.label)}));
+  columns.forEach(c=>{
+    const vals = branchRows.map(r=>r.values[c.key] || 0);
+    c.stats = {min:Math.min(...vals,0),max:Math.max(...vals,0)};
+  });
+  const totalRow = {branch:'分公司整体', total_wan:0, values:{}};
+  branchRows.forEach(r=>{ totalRow.total_wan += r.total_wan; columns.forEach(c=>{ totalRow.values[c.key] = (totalRow.values[c.key] || 0) + (r.values[c.key] || 0); }); });
+  return {month:monthData.month || customSelectedMonth, month_num:monthData.month_num || 0, columns, branch_rows:[...branchRows,totalRow]};
+}
+function renderCustomMonthTable(){
+  const monthData = customMonthDataForView();
+  const columns = monthData.columns || [];
+  const rows = monthData.branch_rows || [];
+  const colgroup = `<colgroup><col class="branchCol">${columns.map(()=>'<col class="productCol">').join('')}<col class="totalCol"></colgroup>`;
+  const thead = '<thead><tr><th>营业部</th>'+columns.map(c=>`<th>${cleanHeaderLabel(c.label)}</th>`).join('')+'<th>汇总</th></tr></thead>';
+  el('customMonthTable').className = 'matrixTable';
+  el('customMonthTable').innerHTML = colgroup + thead + '<tbody>' + rows.map(r=>`<tr class="clickable ${r.branch==='分公司整体'?'companyRow':''} ${customSelectedBranch===r.branch?'selected':''}" data-branch="${r.branch}"><td class="branchCell">${r.branch}</td>${columns.map(c=>{ const v = r.values[c.key] || 0; const style = monthCellStyle(v,c.stats); return `<td class="amountCell" ${style}>${v ? fmt0(v) : ''}</td>`; }).join('')}<td><b>${fmt0(r.total_wan)}</b></td></tr>`).join('') + '</tbody>';
+  el('customMonthTable').style.width = Math.max(820, 104 + columns.length * 104 + 78) + 'px';
+  el('customMonthTable').querySelectorAll('tbody tr').forEach(row=>row.addEventListener('click',()=>{ customSelectedBranch=row.dataset.branch; renderCustomMonthTable(); renderCustomEmployees(); }));
+}
+function customEmployeeScope(){
+  let rows = (DATA.customEmployeeRows || []).filter(x=>(customSelectedMonth==='汇总' || x.month===customSelectedMonth) && (customSelectedBranch==='分公司整体' || x.branch===customSelectedBranch));
+  const map = new Map();
+  rows.forEach(r=>{ const name = cleanHeaderLabel(r.product_display || r.product || '未标注产品'); const k = (customSelectedBranch==='分公司整体' ? r.branch+'|' : '') + r.employee + '|' + name; const g = map.get(k) || {employee:r.employee,branch:r.branch,product:name,amount_wan:0,customer_count:0}; g.amount_wan += r.amount_wan || 0; g.customer_count += r.customer_count || 0; map.set(k,g); });
+  return [...map.values()].sort((a,b)=>b.amount_wan-a.amount_wan);
+}
+function renderCustomEmployees(){
+  const rows = customEmployeeScope(); const max = Math.max(...rows.map(x=>x.amount_wan), 1); const total = rows.reduce((s,x)=>s+x.amount_wan,0);
+  el('customDrillTitle').innerHTML = `<strong>${customSelectedMonth} · ${customSelectedBranch}</strong><br>定制贡献合计 ${fmt0(total)} 万，出单员工 ${new Set(rows.map(x=>x.employee)).size} 人。`;
+  el('customEmployeeRows').innerHTML = rows.length ? rows.map(r=>`<div class="employeeRow"><div class="employeeName">${r.employee}<div class="productName">${r.product}</div></div><div class="barTrack"><div class="barFill" style="width:${Math.max(3,r.amount_wan/max*100)}%"></div></div><div class="employeeTotal">${fmt0(r.amount_wan)}万<div class="mini">${r.customer_count}户</div></div></div>`).join('') : '<div class="note">该口径下未匹配到定制记录，可切换月份或营业部查看。</div>';
+}
+el('customMonthSelect').addEventListener('change',e=>{ customSelectedMonth=e.target.value; renderCustomMonthTable(); renderCustomEmployees(); });
 
 DATA.yoy.forEach(x=>el('salesBranchSelect').insertAdjacentHTML('beforeend',`<option>${x.branch}</option>`)); el('salesBranchSelect').value=salesBranch;
 const branchRowsYoy = DATA.yoy.filter(x=>x.branch!=='分公司整体');
@@ -9082,7 +9312,7 @@ function salesComment(x){
   return `${changeText}，${amountLevel}；${customerText}，${customerLevel}；员工出单率 ${pct(lastRate,1)} 到 ${pct(rate,1)}，${rateLevel}。${branchNotes[x.branch] || '下半年继续围绕重点私募覆盖和高系数产品做持续推进。'}`;
 }
 function renderSalesSummary(){ const x=DATA.yoy.find(r=>r.branch===salesBranch); el('salesSummary').innerHTML=`<div class="branch">${x.branch}</div><div class="big">${fmt(x.amount_wan/10000,2)}<span class="unit">亿元</span></div><div class="summaryLine sales"><span>同比销售</span><b>${x.amount_growth===null?'无基数':pct(x.amount_growth,1)}</b></div><div class="summaryLine customers"><span>客户变化</span><b>${customerChange(x)>=0?'+':''}${fmt0(customerChange(x))} 户</b></div><div class="summaryLine rate"><span>员工出单率</span><b>${pct(x.employee_order_rate,1)}</b></div><div class="note" style="margin-top:10px">${salesComment(x)}</div>`; }
-function renderSalesTable(){ const rows=[...branchRowsYoy].sort((a,b)=>b.amount_wan-a.amount_wan); el('yoyTable').innerHTML='<thead><tr><th>营业部</th><th>2026销售</th><th>2025销售</th><th>销售变化</th><th>2026客户</th><th>2025客户</th><th>客户数变化</th><th>2026出单率</th><th>2025出单率</th><th>出单率变化</th><th>批注</th></tr></thead><tbody>'+rows.map(x=>{ const cDelta=customerChange(x); return `<tr><td>${x.branch}</td><td>${fmt(x.amount_wan,1)}</td><td>${fmt(x.last_amount_wan,1)}</td><td class="${toneClass(x.amount_growth??0)}">${x.amount_growth===null?'--':pct(x.amount_growth,1)}</td><td>${fmt0(x.customer_count)}</td><td>${fmt0(x.last_customer_count)}</td><td>${fmt0(cDelta)}</td><td class="${toneClass(x.employee_order_rate,company.employee_order_rate)}">${pct(x.employee_order_rate,1)}</td><td class="${toneClass(x.last_employee_order_rate,company.last_employee_order_rate)}">${pct(x.last_employee_order_rate,1)}</td><td class="${toneClass(x.employee_rate_change)}">${diffPct(x.employee_rate_change)}</td><td class="comment">${salesComment(x)}</td></tr>`; }).join('')+'</tbody>'; }
+function renderSalesTable(){ const rows=[...branchRowsYoy].sort((a,b)=>b.amount_wan-a.amount_wan).concat([company]); el('yoyTable').innerHTML='<thead><tr><th>营业部</th><th>2026销售</th><th>2025销售</th><th>销售变化</th><th>2026客户</th><th>2025客户</th><th>客户数变化</th><th>2026出单率</th><th>2025出单率</th><th>出单率变化</th><th>批注</th></tr></thead><tbody>'+rows.map(x=>{ const cDelta=customerChange(x); return `<tr class="${x.branch==='分公司整体'?'companyRow':''}"><td>${x.branch}</td><td>${fmt(x.amount_wan,1)}</td><td>${fmt(x.last_amount_wan,1)}</td><td class="${toneClass(x.amount_growth??0)}">${x.amount_growth===null?'--':pct(x.amount_growth,1)}</td><td>${fmt0(x.customer_count)}</td><td>${fmt0(x.last_customer_count)}</td><td>${fmt0(cDelta)}</td><td class="${toneClass(x.employee_order_rate,company.employee_order_rate)}">${pct(x.employee_order_rate,1)}</td><td class="${toneClass(x.last_employee_order_rate,company.last_employee_order_rate)}">${pct(x.last_employee_order_rate,1)}</td><td class="${toneClass(x.employee_rate_change)}">${diffPct(x.employee_rate_change)}</td><td class="comment">${salesComment(x)}</td></tr>`; }).join('')+'</tbody>'; }
 el('salesBranchSelect').addEventListener('change',e=>{ salesBranch=e.target.value; selectedBranch=salesBranch; renderMonthTable(); renderSalesSummary(); renderBranchMonthChart(); }); renderSalesSummary(); renderSalesTable();
 const yoyChart = echarts.init(el('yoyChart'));
 function selectedBranchMonthRows(){ return (DATA.branchMonthSales||[]).find(x=>x.branch===salesBranch)?.months || DATA.monthSales.map(x=>({month:x.month,amount_2026_wan:x.amount_wan,amount_2025_wan:0})); }
@@ -9091,7 +9321,7 @@ function renderBranchMonthChart(){
   const title = salesBranch === '分公司整体' ? '分公司整体' : salesBranch;
   yoyChart.setOption({ tooltip:{ trigger:'axis', valueFormatter:v=>fmt(v,1)+'万元' }, legend:{ top:0, right:10 }, grid:{ left:56,right:28,top:42,bottom:38 }, xAxis:{ type:'category', data:rows.map(x=>x.month) }, yAxis:{ type:'value', name:'万元', splitLine:{ lineStyle:{ color:'#e7ece8' } } }, series:[{ name:title+' 2026', type:'bar', data:rows.map(x=>x.amount_2026_wan), itemStyle:{ color:'#c43d4b' }, barWidth:18, label:{ show:true, position:'top', formatter:p=>fmt(p.value/10000,1)+'亿' } },{ name:title+' 2025', type:'bar', data:rows.map(x=>x.amount_2025_wan), itemStyle:{ color:'#8fb4e6' }, barWidth:18, label:{ show:true, position:'top', formatter:p=>fmt(p.value/10000,1)+'亿' } }] });
 }
-renderMonthTable(); renderEmployees(); renderBranchMonthChart();
+renderMonthTable(); renderEmployees(); renderCustomMonthTable(); renderCustomEmployees(); renderBranchMonthChart();
 
 const coverageTrendChart=echarts.init(el('coverageTrend'));
 const trendDates=['20251231','20260131','20260228','20260331','20260430','20260531','20260630']; const dateLabel=d=>d.slice(0,4)+'-'+d.slice(4,6)+'-'+d.slice(6);
