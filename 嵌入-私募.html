@@ -4,19 +4,20 @@
 <style>
 :root { --ink:#17212b; --muted:#66717e; --line:#d9e2ec; --paper:#f4f7fb; --panel:#fff; --blue:#2563a8; --red:#c43d4b; --green:#15835b; --amber:#c98719; }
 * { box-sizing:border-box; }
-body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; font-size:14px; }
 .wrap { max-width:1600px; margin:0 auto; padding:24px 26px 42px; overflow:hidden; }
 .topbar { display:flex; justify-content:space-between; gap:20px; align-items:flex-end; border-bottom:1px solid var(--line); padding-bottom:16px; }
-h1 { font-size:28px; margin:0 0 8px; }
-.subtitle,.source,.note,.mini { color:var(--muted); font-size:13px; line-height:1.65; }
-.subtitle { font-size:15px; max-width:920px; }
+h1 { font-size:26px; margin:0 0 8px; }
+h2 { font-size:22px; margin:0 0 12px; }
+.subtitle,.source,.note,.mini { color:var(--muted); font-size:12px; line-height:1.65; }
+.subtitle { font-size:13px; max-width:920px; }
 .source { text-align:right; }
 .grid { display:grid; gap:14px; }
 .kpis { grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:18px; }
 .card { min-width:0; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; box-shadow:0 8px 22px rgba(37,99,168,.06); }
-.label { font-size:13px; color:var(--muted); margin-bottom:7px; }
-.value { font-size:32px; font-weight:800; }
-.unit { font-size:14px; color:var(--muted); margin-left:4px; font-weight:500; }
+.label { font-size:12px; color:var(--muted); margin-bottom:7px; }
+.value { font-size:30px; font-weight:800; }
+.unit { font-size:12px; color:var(--muted); margin-left:4px; font-weight:500; }
 .good { color:var(--red); } .bad { color:var(--green); } .mid { color:var(--amber); }
 .section { margin-top:22px; }
 .split { grid-template-columns:minmax(0,1.36fr) minmax(360px,.64fr); align-items:start; }
@@ -32,21 +33,21 @@ h1 { font-size:28px; margin:0 0 8px; }
 .summaryLine.customers b { color:var(--blue); }
 .summaryLine.rate b { color:var(--green); }
 .controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; justify-content:flex-start; }
-select,input,button { height:36px; border:1px solid var(--line); background:#fff; border-radius:6px; padding:0 12px; font:inherit; font-size:15px; }
+select,input,button { height:34px; border:1px solid var(--line); background:#fff; border-radius:6px; padding:0 10px; font:inherit; font-size:13px; }
 button { cursor:pointer; color:#fff; background:var(--blue); border-color:var(--blue); font-weight:700; }
 button.secondary { color:var(--ink); background:#fff; border-color:var(--line); }
 .tablebox { max-height:468px; overflow:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
-table { width:100%; border-collapse:collapse; font-size:15px; }
-th,td { border-bottom:1px solid var(--line); padding:10px 8px; text-align:center; vertical-align:middle; }
-th { position:sticky; top:0; background:#f1f5f9; color:#3f4d5d; font-size:14px; font-weight:800; line-height:1.25; z-index:1; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { border-bottom:1px solid var(--line); padding:8px 7px; text-align:center; vertical-align:middle; }
+th { position:sticky; top:0; background:#f1f5f9; color:#3f4d5d; font-size:12px; font-weight:800; line-height:1.25; z-index:1; }
 td { font-weight:650; line-height:1.3; }
-.matrixTable { table-layout:fixed; min-width:940px; }
-.matrixTable col.branchCol { width:116px; }
-.matrixTable col.productCol { width:126px; }
-.matrixTable col.totalCol { width:92px; }
+.matrixTable { table-layout:fixed; min-width:820px; }
+.matrixTable col.branchCol { width:104px; }
+.matrixTable col.productCol { width:104px; }
+.matrixTable col.totalCol { width:78px; }
 .matrixTable th,.matrixTable td { white-space:normal; word-break:break-word; overflow-wrap:anywhere; }
-.matrixTable thead th { font-size:12px; line-height:1.18; padding:8px 6px; }
-.matrixTable tbody td { height:50px; }
+.matrixTable thead th { font-size:10px; line-height:1.18; padding:7px 5px; }
+.matrixTable tbody td { height:44px; }
 .matrixTable .branchCell { font-weight:850; color:#26394e; background:#fbfdff; }
 .matrixTable .amountCell { cursor:pointer; color:#17212b; }
 .matrixTable .amountCell.empty { color:#b9c4cf; cursor:default; }
@@ -54,17 +55,17 @@ td { font-weight:650; line-height:1.3; }
 .matrixTable tr.selected .branchCell { background:#e8f1ff; color:#174f98; }
 tr.clickable { cursor:pointer; }
 tr.clickable:hover { background:#f8fbff; }
-.analysisBox { background:#eef5ff; border:1px solid #cfe0f7; border-radius:8px; padding:13px; color:#31506f; font-size:16px; line-height:1.7; }
+.analysisBox { background:#eef5ff; border:1px solid #cfe0f7; border-radius:8px; padding:11px; color:#31506f; font-size:14px; line-height:1.6; }
 .analysisBox strong { color:var(--blue); }
-.employeeRows { display:grid; gap:10px; max-height:468px; overflow:auto; padding-right:2px; }
-.employeeRow { display:grid; grid-template-columns:96px minmax(0,1fr) 86px; gap:10px; align-items:center; border:1px solid var(--line); border-radius:8px; padding:10px; background:#fff; }
-.employeeName { font-weight:900; text-align:left; font-size:16px; line-height:1.2; }
-.productName { margin-top:5px; color:var(--muted); font-size:10px; font-weight:700; line-height:1.35; word-break:break-word; }
+.employeeRows { display:grid; gap:8px; max-height:468px; overflow:auto; padding-right:2px; }
+.employeeRow { display:grid; grid-template-columns:88px minmax(0,1fr) 78px; gap:9px; align-items:center; border:1px solid var(--line); border-radius:8px; padding:9px; background:#fff; }
+.employeeName { font-weight:900; text-align:left; font-size:14px; line-height:1.2; }
+.productName { margin-top:4px; color:var(--muted); font-size:9px; font-weight:700; line-height:1.35; word-break:break-word; }
 .barTrack { height:12px; border-radius:999px; background:#eef4fb; overflow:hidden; }
 .barFill { height:100%; border-radius:999px; background:var(--amber); min-width:2px; }
-.employeeTotal { text-align:right; font-weight:900; color:var(--red); font-size:17px; line-height:1.15; }
-.employeeTotal .mini { font-size:10px; font-weight:800; }
-.salesTable th,.salesTable td { font-size:13px; padding:8px 6px; }
+.employeeTotal { text-align:right; font-weight:900; color:var(--red); font-size:15px; line-height:1.15; }
+.employeeTotal .mini { font-size:9px; font-weight:800; }
+.salesTable th,.salesTable td { font-size:12px; padding:7px 5px; }
 .salesTable .comment { text-align:left; min-width:180px; line-height:1.45; }
 .toneRed { color:var(--red); font-weight:900; }
 .toneGreen { color:var(--green); font-weight:900; }
@@ -8991,7 +8992,8 @@ function monthDataForView(){
   }
   const branchMap = new Map();
   const monthTotals = new Map(months.map(m=>[m,{month:m,total:0,min:Infinity,max:-Infinity}]));
-  DATA.branchMonthSales.forEach(row=>{
+  const companySource = DATA.branchMonthSales.find(row=>row.branch==='分公司整体');
+  DATA.branchMonthSales.filter(row=>row.branch!=='分公司整体').forEach(row=>{
     const monthsRow = row.months || [];
     const total = monthsRow.reduce((s,x)=>s + (x.amount_2026_wan || 0), 0);
     const values = {};
@@ -9004,9 +9006,14 @@ function monthDataForView(){
     });
     branchMap.set(row.branch,{branch:row.branch,total_wan:total,values});
   });
-  const branch_rows = [...branchMap.values()].sort((a,b)=>b.total_wan-a.total_wan);
   const totalRow = {branch:'分公司整体', total_wan:0, values:{}};
-  branch_rows.forEach(r=>{ totalRow.total_wan += r.total_wan; months.forEach(m=>{ totalRow.values[m] = (totalRow.values[m] || 0) + (r.values[m] || 0); }); });
+  const sourceMonths = companySource?.months || [];
+  if(sourceMonths.length){
+    sourceMonths.forEach(x=>{ totalRow.values[x.month] = x.amount_2026_wan || 0; totalRow.total_wan += x.amount_2026_wan || 0; });
+  } else {
+    [...branchMap.values()].forEach(r=>{ totalRow.total_wan += r.total_wan; months.forEach(m=>{ totalRow.values[m] = (totalRow.values[m] || 0) + (r.values[m] || 0); }); });
+  }
+  const branch_rows = [...branchMap.values()].sort((a,b)=>b.total_wan-a.total_wan);
   const columns = months.map(m=>({key:m,label:m,stats:monthTotals.get(m)}));
   return {month:'汇总', month_num:0, columns, branch_rows:[totalRow,...branch_rows]};
 }
@@ -9029,7 +9036,7 @@ function renderMonthTable(){
   const thead = '<thead><tr><th>营业部</th>'+columns.map(c=>`<th>${cleanHeaderLabel(c.label)}</th>`).join('')+'<th>汇总</th></tr></thead>';
   const showProduct = selectedMonth !== '汇总';
   el('monthTable').innerHTML = colgroup + thead + '<tbody>' + rows.map(r=>`<tr class="clickable ${selectedBranch===r.branch?'selected':''}" data-branch="${r.branch}"><td class="branchCell">${r.branch}</td>${columns.map(c=>{ const v = r.values[c.key] || 0; const productKey = c.product_key || c.key; const selected = showProduct && selectedBranch===r.branch && selectedProductKey===productKey; const style = selectedMonth === '汇总' ? monthCellStyle(v,c.stats) : ''; return `<td class="amountCell ${selected?'selectedCell':''}" ${style} data-month="${c.key}" data-branch="${r.branch}" data-key="${productKey}" data-label="${cleanHeaderLabel(c.label)}">${v ? fmt0(v) : ''}</td>`; }).join('')}<td><b>${fmt0(r.total_wan)}</b></td></tr>`).join('') + '</tbody>';
-  el('monthTable').style.width = Math.max(940, 116 + columns.length * 126 + 92) + 'px';
+  el('monthTable').style.width = Math.max(820, 104 + columns.length * 104 + 78) + 'px';
   el('monthTable').querySelectorAll('tbody tr').forEach(row=>row.addEventListener('click',()=>{ selectedBranch=row.dataset.branch; salesBranch=selectedBranch; selectedProductKey=''; selectedProductLabel=''; el('salesBranchSelect').value=salesBranch; renderMonthTable(); renderEmployees(); renderSalesSummary(); renderBranchMonthChart(); }));
   el('monthTable').querySelectorAll('.amountCell').forEach(cell=>cell.addEventListener('click',e=>{ e.stopPropagation(); selectedBranch=cell.dataset.branch; salesBranch=selectedBranch; if(selectedMonth==='汇总'){ selectedMonth=cell.dataset.month; selectedProductKey=''; selectedProductLabel=''; el('monthSelect').value=selectedMonth; } else { selectedProductKey=cell.dataset.key; selectedProductLabel=cell.dataset.label; } el('salesBranchSelect').value=salesBranch; renderMonthTable(); renderEmployees(); renderSalesSummary(); renderBranchMonthChart(); }));
 }
